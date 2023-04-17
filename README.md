@@ -1,7 +1,5 @@
 # Expenses tracker
 
-
-
 ## General description:
 This is the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language
 that have been learned during the course.
@@ -153,3 +151,4 @@ some ideas for further development may be as follows:
 - creating a website or a mobile application based on the functionalities of the program.
 
 - integrating the program into work management software such as asana to add a budgeting side to the projects.
+
