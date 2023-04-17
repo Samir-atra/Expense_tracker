@@ -1,6 +1,6 @@
 # Expenses tracker
 
-![beedoo banana](https://drive.google.com/file/d/1scmP29XtdUpNJ1YsfA2351dk8Ua-scsr/view?usp=share_link)
+
 
 #### Video Demo:  <URL HERE>
 ## General description:
