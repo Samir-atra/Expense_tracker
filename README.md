@@ -1,5 +1,7 @@
 # Expenses tracker
 
+## Demo video: https://youtu.be/nruasnClqvc
+
 ## General description:
 This is the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language
 that have been learned during the course.
