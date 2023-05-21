@@ -34,6 +34,8 @@ check the rest file for improvements
 """
 
 # imports
+from flask import Flask, g
+import sqlite3
 from datetime import datetime
 import csv
 import pandas as pd
@@ -49,7 +51,18 @@ import sys
 import PySimpleGUI as sg
 import textwrap
 
+app = Flask(__name__)
 
+Database = "/workspaces/Expenses_tracker/project/budgeting.db"
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(Database)
+    return db
+
+
+@app.route("/")
 def main():
     # parse the command line arguments
     parser = argparse.ArgumentParser()
@@ -60,6 +73,7 @@ def main():
 
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
+    cur = get_db().cursor()
     file_name = str(f"{month}.csv")
 
     # process the command line arguments
