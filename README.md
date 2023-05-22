@@ -1,5 +1,5 @@
 # Expenses tracker
-
+# A work in progress
 ## Demo video: https://youtu.be/nruasnClqvc
 
 ## General description:

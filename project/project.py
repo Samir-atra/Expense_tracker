@@ -27,7 +27,7 @@ Exceptions to be added:
 - withdrawing more than the amount left in the budget.  DONE
 - using c mode without a filename. DONE
 - adding a budget source without a plus sign. Done
--
+- add the ability to save the info in a database to the side of a csv file.
 
 check the rest file for improvements
 
