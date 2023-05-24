@@ -22,15 +22,26 @@ import re
 import sys
 import textwrap
 
-app = Flask(__name__)
 
 
-def get_db():
-    # db = getattr(g, '_database', None)
-    db = None
-    Database = "/home/samer/Desktop/Beedoo/Expenses_tracker/project/budgeting.db"
-    if db is None:
-        db = sqlite3.connect(Database)
-    return db
+Database = "/home/samer/Desktop/Beedoo/Expenses_tracker/project/budgeting.db"
+db = sqlite3.connect(Database)
+
+month = datetime.now().strftime("%B_%Y")
+
+cursor = db.cursor()
+
+create_table_query = """CREATE TABLE %s (
+            Budget INTEGER,
+            Withdraw INTEGER,
+            Amount_left INTEGER,
+            Withdrawal_purpose TEXT,
+            Date TEXT,
+            Time TEXT
+    )""" % month
 
 
+create_table = cursor.execute(query)
+
+
+db.commit()
