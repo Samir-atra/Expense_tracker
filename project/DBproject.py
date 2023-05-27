@@ -50,6 +50,7 @@ def gui_function(win_title, text1, text2, submit, cancel, size):
 
     return event, values
 
+########################################################################################################
 
 Database = "/home/samer/Desktop/Beedoo/Expenses_tracker/project/budgeting.db"
 db = sqlite3.connect(Database)
@@ -66,18 +67,11 @@ create_table = cursor.execute(create_table_query)
 
 db.commit()
 
+###############################################################################################
 
 date = datetime.now().strftime("%x")
 time = datetime.now().strftime("%X")
 
-# _, withdraw_amount_purpose = gui_function(
-#                 "Withdrawal",
-#                 "The amount to be withdrawn: ",
-#                 "The purpose of this withdrawal: ",
-#                 "Submit",
-#                 "Cancel",
-#                 2,
-#             )
 
 _, budget_sources = gui_function(
     "Budget",
@@ -89,25 +83,46 @@ _, budget_sources = gui_function(
 )
 
 
-
 budget = int(budget_sources[0])
 
 sources = budget_sources[1]
 
 init_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
 
-args = (budget, budget, sources, date, time)
+init_entry_args = (budget, budget, f"First entry budget source(s): {sources}", date, time)
 
-init_entry = cursor.execute(init_entry_query, args)
+init_entry = cursor.execute(init_entry_query, init_entry_args)
 
 
-# make_an_entry_query = """INSERT INTO %s (
-#                 Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time)
-#                 VALUES (Budget, %s, left, %s, date, time)
-                
-#                 """
+##########################################################################################
 
-# make_an_entry = cursor.execute()
+_, withdraw_amount_purpose = gui_function(
+                "Withdrawal",
+                "The amount to be withdrawn: ",
+                "The purpose of this withdrawal: ",
+                "Submit",
+                "Cancel",
+                2,
+            )
+
+withdraw = withdraw_amount_purpose[0]
+
+withdrawal_purpose = withdraw_amount_purpose[1]
+
+make_an_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+
+cursor.execute(f"SELECT * FROM {month}")
+
+fetch =  cursor.fetchall()
+
+fetch = fetch[-1][2]
+
+left = int(fetch) - int(withdraw)
+
+make_an_entry_args = (fetch, withdraw, left, withdrawal_purpose, date, time)
+
+make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
+
 
 db.commit()
 
