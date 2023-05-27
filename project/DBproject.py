@@ -88,17 +88,17 @@ _, budget_sources = gui_function(
     2,
 )
 
-print(int(budget_sources[0]))
+
 
 budget = int(budget_sources[0])
-bdget = int(budget_sources[0])
+
 sources = budget_sources[1]
 
-init_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (%s, 0, %s, First entry budget source %s, %s, %s);" 
+init_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
 
+args = (budget, budget, sources, date, time)
 
-
-init_entry = cursor.execute(init_entry_query, (budget, bdget, sources, date, time))
+init_entry = cursor.execute(init_entry_query, args)
 
 
 # make_an_entry_query = """INSERT INTO %s (
