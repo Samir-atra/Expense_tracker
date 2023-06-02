@@ -39,16 +39,11 @@ import csv
 import pandas as pd
 import os
 import time as tm
-from reportlab.platypus import SimpleDocTemplate
-from reportlab.platypus import Paragraph, Spacer, Table, Image
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
 import argparse
 import re
 import sys
-import textwrap
-import PySimpleGUI as sg
-
+import utils.Gui as Gui
+import utils.report_generator as rg 
 
 
 def main():
@@ -72,7 +67,7 @@ def main():
             file_name = args.c
     # budget editing command line argument
     if args.b:
-        _, budget_sources = gui_function(
+        _, budget_sources = Gui.gui_function(
             "Budget_update",
             "New budget sources (usage: source1+source2+source3+...): ",
             "Added budget amount: ",
@@ -84,7 +79,7 @@ def main():
     # report generation command line argument
     elif args.g:
         d = os.getcwd()
-        _, question = gui_function(
+        _, question = Gui.gui_function(
             "Question",
             f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
             "",
@@ -98,13 +93,13 @@ def main():
             or question[0] == "Yes"
             or question[0] == "Y"
         ):
-            generate_report(file_name)
+            rg.generate_report(file_name)
         else:
             sys.exit()
     # default program execution
     else:
         if file_name not in os.listdir():
-            _, budget_sources = gui_function(
+            _, budget_sources = Gui.gui_function(
                 "Budget",
                 "The amount of money for the month: ",
                 "Sources of the budget: ",
@@ -115,7 +110,7 @@ def main():
             create_csv_file_for_the_month(
                 file_name, budget_sources[0], budget_sources[1]
             )
-            _, q = gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
+            _, q = Gui.gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
                 _, withdraw_amount_purpose = gui_function(
                     "Withdrawal",
@@ -132,7 +127,7 @@ def main():
             elif q[0] == "n" or q[0] == "N" or q[0] == "no" or q[0] == "No":
                 pass
         else:
-            _, withdraw_amount_purpose = gui_function(
+            _, withdraw_amount_purpose = Gui.gui_function(
                 "Withdrawal",
                 "The amount to be withdrawn: ",
                 "The purpose of this withdrawal: ",
@@ -210,76 +205,6 @@ def budget_update(file_name, new_sources, added_budget):
     x.to_csv(file_name, index=False)
 
     return x.at[0, "Withdrawal_purpose"]
-
-
-def generate_report(file_name):
-    # a function to generate a pdf report based on the csv filename given, the report contains a table with all the csv file contents
-    # and all the images found in the current directory
-    report = SimpleDocTemplate("report.pdf")
-    styles = getSampleStyleSheet()
-    title = "Expences of the month"
-    wrapper = textwrap.TextWrapper(width=25)
-    table = []
-    try:
-        with open(file_name, "r") as fn:
-            for line in fn.readlines():
-                lis = line.replace("\n", "").split(",")
-                lisy = [wrapper.fill(text=ele) for ele in lis]
-                table.append(lisy)
-    except FileNotFoundError:
-        sys.exit("Could not find a csv file with the provided name.")
-    report_title = Paragraph(title, styles["h1"])
-    middle_title = Paragraph("Images of related documents:", styles["h1"])
-    empty_line = Spacer(1, 20)
-    content = Table(
-        table,
-        style=[
-            ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-            ("BOX", (0, 0), (-1, -1), 0.5, colors.black),
-        ],
-    )
-    arguments = [
-        report_title,
-        empty_line,
-        content,
-        empty_line,
-        middle_title,
-        empty_line,
-    ]
-    for file in os.listdir():
-        if ".jpg" in file.lower() or ".png" in file.lower():
-            image = Image(file, width=300, height=300)
-            arguments.append(image)
-            arguments.append(empty_line)
-    report.build(arguments)
-
-
-def gui_function(win_title, text1, text2, submit, cancel, size):
-    # a function for generating the graphical user interface for the project
-    if size == 1:
-        layout = [
-            [sg.Text(text1)],
-            [sg.InputText()],
-            [sg.Submit(submit), sg.Cancel(cancel)],
-        ]
-    elif size == 2:
-        layout = [
-            [sg.Text(text1)],
-            [sg.InputText()],
-            [sg.Text(text2)],
-            [sg.InputText()],
-            [sg.Submit(submit), sg.Cancel(cancel)],
-        ]
-
-    window = sg.Window(win_title, layout)
-
-    event, values = window.read()
-    if event == "Cancel":
-        sys.exit()
-    window.close()
-
-    return event, values
 
 
 class Dictionary:

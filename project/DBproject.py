@@ -14,44 +14,12 @@ import sqlite3
 from datetime import datetime
 import os
 import time as tm
-from reportlab.platypus import SimpleDocTemplate
-from reportlab.platypus import Paragraph, Spacer, Table, Image
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
 import argparse
 import re
 import sys
-import textwrap
-import PySimpleGUI as sg
-from .
-
-# def gui_function(win_title, text1, text2, submit, cancel, size):
-#     # a function for generating the graphical user interface for the project
-#     if size == 1:
-#         layout = [
-#             [sg.Text(text1)],
-#             [sg.InputText()],
-#             [sg.Submit(submit), sg.Cancel(cancel)],
-#         ]
-#     elif size == 2:
-#         layout = [
-#             [sg.Text(text1)],
-#             [sg.InputText()],
-#             [sg.Text(text2)],
-#             [sg.InputText()],
-#             [sg.Submit(submit), sg.Cancel(cancel)],
-#         ]
-
-#     window = sg.Window(win_title, layout)
-
-#     event, values = window.read()
-#     if event == "Cancel":
-#         sys.exit()
-#     window.close()
-
-#     return event, values
-
-########################################################################################################
+import utils.Gui as Gui
+import utils.report_generator as rg 
+import csv
 
 Database = "/home/samer/Desktop/Beedoo/Expenses_tracker/project/budgeting.db"
 
@@ -75,7 +43,7 @@ db.commit()
 # time = datetime.now().strftime("%X")
 
 
-# _, budget_sources = gui_function(
+# _, budget_sources = Gui.gui_function(
 #     "Budget",
 #     "The amount of money for the month: ",
 #     "Sources of the budget: ",
@@ -96,9 +64,11 @@ db.commit()
 # init_entry = cursor.execute(init_entry_query, init_entry_args)
 
 # db.commit()
+
+
 # ##########################################################################################
 
-# _, withdraw_amount_purpose = gui_function(
+# _, withdraw_amount_purpose = Gui.gui_function(
 #                 "Withdrawal",
 #                 "The amount to be withdrawn: ",
 #                 "The purpose of this withdrawal: ",
@@ -130,47 +100,93 @@ db.commit()
 
 #####################################################################################################
 
-_, budget_sources = gui_function(
-    "Budget_update",
-    "New budget sources (usage: source1+source2+source3+...): ",
-    "Added budget amount: ",
-    "Submit",
-    "Cancel",
-    2,
-)
+# _, budget_sources = Gui.gui_function(
+#     "Budget_update",
+#     "New budget sources (usage: source1+source2+source3+...): ",
+#     "Added budget amount: ",
+#     "Submit",
+#     "Cancel",
+#     2,
+# )
 
-new_sources = budget_sources[0]
+# new_sources = budget_sources[0]
 
-added_budget = budget_sources[1]
+# added_budget = budget_sources[1]
 
-added_budget = int(budget_sources[1])
+# added_budget = int(budget_sources[1])
 
-count_query = f"SELECT COUNT(*) FROM {month};"
+# count_query = f"SELECT COUNT(*) FROM {month};"
+
+# cursor.execute(count_query)
+
+# fetch =  cursor.fetchall()
+
+# count_fetch = fetch[0][0]
+
+# for row in range(count_fetch):
+#     cursor.execute(f"SELECT * FROM {month}")
+
+#     fetch =  cursor.fetchall()
+
+#     old_budget = fetch[-1][1]
+#     old_left = fetch[-1][3]
+#     old_purpose = str(fetch[0][4])
+
+#     new_budget = added_budget + old_budget
+#     new_left = added_budget + old_left
+#     new_purpose = old_purpose + new_sources
+
+#     update_query = f"UPDATE {month} SET Withdrawal_purpose = ?, Budget = ?, Amount_left = ? WHERE id = {row+1};"
+
+#     update_args = (new_purpose, new_budget, new_left)
+
+#     cursor.execute(update_query, update_args)
+
+#     db.commit()
+
+
+####################################################################################################
+
+
+count_query = f"SELECT * FROM {month};"
 
 cursor.execute(count_query)
 
 fetch =  cursor.fetchall()
 
-count_fetch = fetch[0][0]
+with open(f"{month}.csv", "a", newline="") as csvfile:
+    headers = [
+        "Budget",
+        "Withdraw",
+        "Amount_left",
+        "Withdrawal_purpose",
+        "Date",
+        "Time",
+    ]
 
-for row in range(count_fetch):
-    cursor.execute(f"SELECT * FROM {month}")
+    csv_out=csv.writer(csvfile)
+    csv_out.writerow(headers)
+    for row in fetch:
+        csv_out.writerow(row)
 
-    fetch =  cursor.fetchall()
 
-    old_budget = fetch[-1][1]
-    old_left = fetch[-1][3]
-    old_purpose = str(fetch[0][4])
+d = os.getcwd()
+_, question = Gui.gui_function(
+    "Question",
+    f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
+    "",
+    "Submit",
+    "Cancel",
+    1,
+)
+if (
+    question[0] == "y"
+    or question[0] == "yes"
+    or question[0] == "Yes"
+    or question[0] == "Y"
+):
+    rg.generate_report(f"{month}.csv")
+else:
+    sys.exit()
 
-    new_budget = added_budget + old_budget
-    new_left = added_budget + old_left
-    new_purpose = old_purpose + new_sources
-
-    update_query = f"UPDATE {month} SET Withdrawal_purpose = ?, Budget = ?, Amount_left = ? WHERE id = {row+1};"
-
-    update_args = (new_purpose, new_budget, new_left)
-
-    cursor.execute(update_query, update_args)
-
-    db.commit()
 
