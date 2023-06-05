@@ -37,9 +37,7 @@ cursor = db.cursor()
 
 create_table_query = f"CREATE TABLE IF NOT EXISTS {month} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
 
-
 create_table = cursor.execute(create_table_query)
-
 
 db.commit()
 
@@ -60,7 +58,6 @@ def db_first_entry(filename, budget, sources):
 
     db.commit()
     
-    return "beedoo"
 
 
 def db_make_an_entry(file_name, withdraw, purpose):
@@ -85,7 +82,6 @@ def db_make_an_entry(file_name, withdraw, purpose):
 
     db.commit()
 
-    return "beedoo"
 
 
 def db_budget_update(filename, new_sources, added_budget):
@@ -122,7 +118,6 @@ def db_budget_update(filename, new_sources, added_budget):
 
         db.commit()
 
-    return "beedoo"
 
 
 def db_generate_report(filename):
@@ -147,29 +142,8 @@ def db_generate_report(filename):
         csv_out.writerow(headers)
         for row in fetch:
             csv_out.writerow(row)
+ 
+    rg.generate_report(f"{month}.csv")
 
 
-    d = os.getcwd()
-    _, question = Gui.gui_function(
-        "Question",
-        f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
-        "",
-        "Submit",
-        "Cancel",
-        1,
-    )
-    if (
-        question[0] == "y"
-        or question[0] == "yes"
-        or question[0] == "Yes"
-        or question[0] == "Y"
-    ):
-        rg.generate_report(f"{month}.csv")
-    else:
-        sys.exit()
 
-    return "beedoo"
-
-
-def beedoo(x):
-    print(f"this is {x} from beedoo")

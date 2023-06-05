@@ -1,5 +1,5 @@
-from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, beedoo
-from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update
+from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report
+from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report
 from datetime import datetime
 import os
 import argparse
@@ -7,13 +7,9 @@ import sys
 import utils.Gui as Gui
 import utils.report_generator as rg 
 
-datatype = "beedoo"
-globals()[f"{datatype}"]("bee")
 
 
 def main():
-
-
 
     _, type_question = Gui.gui_function(
         "Choose type",
@@ -29,7 +25,6 @@ def main():
     elif type_question[0] == "csv":
         datatype = "csv"
 
-
     # parse the command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", help="budget editing mode", action="store_true")
@@ -40,8 +35,6 @@ def main():
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
     file_name = str(f"{month}.csv")
-    date = datetime.now().strftime("%x")
-    time = datetime.now().strftime("%X")
 
     # process the command line arguments
     # custom name command line argument
@@ -78,7 +71,7 @@ def main():
             or question[0] == "Yes"
             or question[0] == "Y"
         ):
-            rg.generate_report(file_name)
+            globals()[f"{datatype}_generate_report"](file_name)
         else:
             sys.exit()
     # default program execution
@@ -105,7 +98,7 @@ def main():
                     "Cancel",
                     2,
                 )
-                make_an_entry(
+                globals()[f"{datatype}_make_an_entry"](
                     file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
                 )
 
@@ -120,9 +113,10 @@ def main():
                 "Cancel",
                 2,
             )
-            make_an_entry(
+            globals()[f"{datatype}_make_an_entry"](
                 file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
             )
+
 
 if __name__ == "__main__":
     main()
