@@ -46,101 +46,101 @@ import utils.Gui as Gui
 import utils.report_generator as rg 
 
 
-def main():
-    # parse the command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-b", help="budget editing mode", action="store_true")
-    parser.add_argument("-g", help="report generation mode", action="store_true")
-    parser.add_argument("-c", help="custom csv filename mode")
-    args = parser.parse_args()
+# def main():
+#     # parse the command line arguments
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("-b", help="budget editing mode", action="store_true")
+#     parser.add_argument("-g", help="report generation mode", action="store_true")
+#     parser.add_argument("-c", help="custom csv filename mode")
+#     args = parser.parse_args()
 
-    # generate the default file name which is the current month and year
-    month = datetime.now().strftime("%B_%Y")
-    file_name = str(f"{month}.csv")
+#     # generate the default file name which is the current month and year
+#     month = datetime.now().strftime("%B_%Y")
+#     file_name = str(f"{month}.csv")
 
-    # process the command line arguments
-    # custom name command line argument
-    if args.c:
-        if ".csv" not in args.c:
-            sys.exit("Invalid filename")
-        else:
-            file_name = args.c
-    # budget editing command line argument
-    if args.b:
-        _, budget_sources = Gui.gui_function(
-            "Budget_update",
-            "New budget sources (usage: source1+source2+source3+...): ",
-            "Added budget amount: ",
-            "Submit",
-            "Cancel",
-            2,
-        )
-        budget_update(file_name, budget_sources[0], budget_sources[1])
-    # report generation command line argument
-    elif args.g:
-        d = os.getcwd()
-        _, question = Gui.gui_function(
-            "Question",
-            f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
-            "",
-            "Submit",
-            "Cancel",
-            1,
-        )
-        if (
-            question[0] == "y"
-            or question[0] == "yes"
-            or question[0] == "Yes"
-            or question[0] == "Y"
-        ):
-            rg.generate_report(file_name)
-        else:
-            sys.exit()
-    # default program execution
-    else:
-        if file_name not in os.listdir():
-            _, budget_sources = Gui.gui_function(
-                "Budget",
-                "The amount of money for the month: ",
-                "Sources of the budget: ",
-                "Submit",
-                "Cancel",
-                2,
-            )
-            create_csv_file_for_the_month(
-                file_name, budget_sources[0], budget_sources[1]
-            )
-            _, q = Gui.gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
-            if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
-                _, withdraw_amount_purpose = gui_function(
-                    "Withdrawal",
-                    "The amount to be withdrawn: ",
-                    "The purpose of this withdrawal: ",
-                    "Submit",
-                    "Cancel",
-                    2,
-                )
-                make_an_entry(
-                    file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
-                )
+#     # process the command line arguments
+#     # custom name command line argument
+#     if args.c:
+#         if ".csv" not in args.c:
+#             sys.exit("Invalid filename")
+#         else:
+#             file_name = args.c
+#     # budget editing command line argument
+#     if args.b:
+#         _, budget_sources = Gui.gui_function(
+#             "Budget_update",
+#             "New budget sources (usage: source1+source2+source3+...): ",
+#             "Added budget amount: ",
+#             "Submit",
+#             "Cancel",
+#             2,
+#         )
+#         budget_update(file_name, budget_sources[0], budget_sources[1])
+#     # report generation command line argument
+#     elif args.g:
+#         d = os.getcwd()
+#         _, question = Gui.gui_function(
+#             "Question",
+#             f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
+#             "",
+#             "Submit",
+#             "Cancel",
+#             1,
+#         )
+#         if (
+#             question[0] == "y"
+#             or question[0] == "yes"
+#             or question[0] == "Yes"
+#             or question[0] == "Y"
+#         ):
+#             rg.generate_report(file_name)
+#         else:
+#             sys.exit()
+#     # default program execution
+#     else:
+#         if file_name not in os.listdir():
+#             _, budget_sources = Gui.gui_function(
+#                 "Budget",
+#                 "The amount of money for the month: ",
+#                 "Sources of the budget: ",
+#                 "Submit",
+#                 "Cancel",
+#                 2,
+#             )
+#             create_csv_file_for_the_month(
+#                 file_name, budget_sources[0], budget_sources[1]
+#             )
+#             _, q = Gui.gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
+#             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
+#                 _, withdraw_amount_purpose = gui_function(
+#                     "Withdrawal",
+#                     "The amount to be withdrawn: ",
+#                     "The purpose of this withdrawal: ",
+#                     "Submit",
+#                     "Cancel",
+#                     2,
+#                 )
+#                 make_an_entry(
+#                     file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
+#                 )
 
-            elif q[0] == "n" or q[0] == "N" or q[0] == "no" or q[0] == "No":
-                pass
-        else:
-            _, withdraw_amount_purpose = Gui.gui_function(
-                "Withdrawal",
-                "The amount to be withdrawn: ",
-                "The purpose of this withdrawal: ",
-                "Submit",
-                "Cancel",
-                2,
-            )
-            make_an_entry(
-                file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
-            )
+#             elif q[0] == "n" or q[0] == "N" or q[0] == "no" or q[0] == "No":
+#                 pass
+#         else:
+#             _, withdraw_amount_purpose = Gui.gui_function(
+#                 "Withdrawal",
+#                 "The amount to be withdrawn: ",
+#                 "The purpose of this withdrawal: ",
+#                 "Submit",
+#                 "Cancel",
+#                 2,
+#             )
+#             make_an_entry(
+#                 file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
+#             )
 
 
-def create_csv_file_for_the_month(file_name, budget, sources):
+def csv_first_entry(file_name, budget, sources):
     # a function to initiate a csv file and write the first line of it
     print("Creating file...")
     tm.sleep(2)
@@ -153,7 +153,7 @@ def create_csv_file_for_the_month(file_name, budget, sources):
     return dic[0]["Budget"]
 
 
-def make_an_entry(file_name, withdraw, purpose):
+def csv_make_an_entry(file_name, withdraw, purpose):
     # a function to edit the csv file and add withdrawal lines to it
     with open(file_name, "r") as file:
         data = file.readlines()
@@ -185,7 +185,7 @@ def the_writer(file_name, dic, type):
     return True
 
 
-def budget_update(file_name, new_sources, added_budget):
+def csv_budget_update(file_name, new_sources, added_budget):
     # a function to make the necessary edits to the csv file when a budget edit is needed
     x = pd.DataFrame(pd.read_csv(file_name))
     old_sources = re.search("\(([a-zA-Z+ ]*)\)", x.at[0, "Withdrawal_purpose"])
