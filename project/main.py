@@ -1,5 +1,5 @@
-from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report
-from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report
+from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, db_check_existence
+from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report, csv_check_existence
 from datetime import datetime
 import os
 import argparse
@@ -10,7 +10,16 @@ import utils.report_generator as rg
 
 
 def main():
-
+   
+   
+    # parse the command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-b", help="budget editing mode", action="store_true")
+    parser.add_argument("-g", help="report generation mode", action="store_true")
+    parser.add_argument("-c", help="custom csv filename mode")
+    args = parser.parse_args()
+   
+   
     _, type_question = Gui.gui_function(
         "Choose type",
         f"Please, select the data saving type and click submit (csv, database): ",
@@ -25,12 +34,7 @@ def main():
     elif type_question[0] == "csv":
         datatype = "csv"
 
-    # parse the command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-b", help="budget editing mode", action="store_true")
-    parser.add_argument("-g", help="report generation mode", action="store_true")
-    parser.add_argument("-c", help="custom csv filename mode")
-    args = parser.parse_args()
+
 
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
@@ -76,7 +80,7 @@ def main():
             sys.exit()
     # default program execution
     else:
-        if file_name not in os.listdir():
+        if globals()[f"{datatype}_check_existence"](month):
             _, budget_sources = Gui.gui_function(
                 "Budget",
                 "The amount of money for the month: ",

@@ -35,16 +35,32 @@ time = datetime.now().strftime("%X")
 
 cursor = db.cursor()
 
-create_table_query = f"CREATE TABLE IF NOT EXISTS {month} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
 
-create_table = cursor.execute(create_table_query)
 
-db.commit()
+def db_check_existence(filename):
+
+    check_exictance_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{filename}';"
+
+    check_query = cursor.execute(check_exictance_query)
+
+    db.commit()
+
+    fetch = cursor.fetchall()
+
+    if fetch == []:
+        return True
+    else:
+        return False
 
 
 
 def db_first_entry(filename, budget, sources):
 
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {month} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
+
+    create_table = cursor.execute(create_table_query)
+
+    db.commit()
 
     budget = int(budget)
 
@@ -62,9 +78,6 @@ def db_first_entry(filename, budget, sources):
 
 def db_make_an_entry(file_name, withdraw, purpose):
 
-    withdraw = withdraw
-
-    withdrawal_purpose = purpose
 
     make_an_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
 
@@ -72,11 +85,15 @@ def db_make_an_entry(file_name, withdraw, purpose):
 
     fetch =  cursor.fetchall()
 
-    fetch = fetch[-1][2]
+    budget = fetch[-1][3]
+    
+    withdraw = withdraw
 
-    left = int(fetch) - int(withdraw)
+    left = int(budget) - int(withdraw)
 
-    make_an_entry_args = (fetch, withdraw, left, withdrawal_purpose, date, time)
+    withdrawal_purpose = purpose
+
+    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
 
     make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
 
@@ -98,25 +115,49 @@ def db_budget_update(filename, new_sources, added_budget):
     count_fetch = fetch[0][0]
 
     for row in range(count_fetch):
+
         cursor.execute(f"SELECT * FROM {month}")
 
         fetch =  cursor.fetchall()
 
-        old_budget = fetch[-1][1]
-        old_left = fetch[-1][3]
+        old_budget = fetch[row][1]
+        old_left = fetch[row][3]
         old_purpose = str(fetch[0][4])
 
         new_budget = added_budget + old_budget
         new_left = added_budget + old_left
-        new_purpose = old_purpose + new_sources
+        new_purpose = old_purpose + "+" + new_sources
 
-        update_query = f"UPDATE {month} SET Withdrawal_purpose = ?, Budget = ?, Amount_left = ? WHERE id = {row+1};"
-
-        update_args = (new_purpose, new_budget, new_left)
+        if row == 0:
+            update_query = f"UPDATE {month} SET Budget = ?, Amount_left = ?, Withdrawal_purpose = ? WHERE id = {row+1};"
+            update_args = (new_budget, new_left, new_purpose)
+        else:
+            update_query = f"UPDATE {month} SET Budget = ?, Amount_left = ? WHERE id = {row+1};"
+            update_args = (new_budget, new_left)
 
         cursor.execute(update_query, update_args)
 
         db.commit()
+
+    make_an_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+
+    cursor.execute(f"SELECT * FROM {month}")
+
+    fetch =  cursor.fetchall()
+
+    budget = fetch[-1][3]
+
+    withdraw = 0
+
+    left = budget
+
+    withdrawal_purpose = f"A budget update ({added_budget}) happened on:"
+
+    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
+
+    make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
+
+    db.commit()
 
 
 
@@ -144,6 +185,5 @@ def db_generate_report(filename):
             csv_out.writerow(row)
  
     rg.generate_report(f"{month}.csv")
-
 
 

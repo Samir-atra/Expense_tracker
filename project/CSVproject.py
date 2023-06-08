@@ -45,6 +45,13 @@ import sys
 import utils.Gui as Gui
 import utils.report_generator as rg 
 
+def csv_check_existence(filename):
+
+    filename = f"{filename}.csv"
+    if filename not in os.listdir():
+        return True
+    else:
+        return False
 
 
 def csv_first_entry(file_name, budget, sources):
@@ -106,7 +113,7 @@ def csv_budget_update(file_name, new_sources, added_budget):
     x.Budget = x.Budget + int(added_budget)
     x.Amount_left = x.Amount_left + int(added_budget)
     dicti = Dictionary()
-    dic = dicti.budg_up(x.iloc[-1, 0], x.iloc[-1, 2])
+    dic = dicti.budg_up(x.iloc[-1, 0], x.iloc[-1, 2], added_budget)
     df = pd.DataFrame(dic, index=["Time"])
     x = pd.concat([x, df], ignore_index=True)
     x.to_csv(file_name, index=False)
@@ -148,11 +155,11 @@ class Dictionary:
 
         return self.di
 
-    def budg_up(self, budget, amount_left):
+    def budg_up(self, budget, amount_left, added_budget):
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = 0
         self.di[0]["Amount_left"] = amount_left
-        self.di[0]["Withdrawal_purpose"] = "A budget update happened on: "
+        self.di[0]["Withdrawal_purpose"] = f"A budget update ({added_budget}) happened on: "
         self.di[0]["Date"] = self.date
         self.di[0]["Time"] = self.time
 
