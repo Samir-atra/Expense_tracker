@@ -37,9 +37,9 @@ cursor = db.cursor()
 
 
 
-def db_check_existence(filename):
+def db_check_existence(tablename):
 
-    check_exictance_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{filename}';"
+    check_exictance_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{tablename}';"
 
     check_query = cursor.execute(check_exictance_query)
 
@@ -54,9 +54,9 @@ def db_check_existence(filename):
 
 
 
-def db_first_entry(filename, budget, sources):
+def db_first_entry(tablename, budget, sources):
 
-    create_table_query = f"CREATE TABLE IF NOT EXISTS {month} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {tablename} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
 
     create_table = cursor.execute(create_table_query)
 
@@ -66,7 +66,7 @@ def db_first_entry(filename, budget, sources):
 
     sources = sources
 
-    init_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
+    init_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
 
     init_entry_args = (budget, budget, f"First entry budget source(s): {sources}", date, time)
 
@@ -76,12 +76,12 @@ def db_first_entry(filename, budget, sources):
     
 
 
-def db_make_an_entry(file_name, withdraw, purpose):
+def db_make_an_entry(tablename, withdraw, purpose):
 
 
-    make_an_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
 
-    cursor.execute(f"SELECT * FROM {month}")
+    cursor.execute(f"SELECT * FROM {tablename}")
 
     fetch =  cursor.fetchall()
 
@@ -101,12 +101,12 @@ def db_make_an_entry(file_name, withdraw, purpose):
 
 
 
-def db_budget_update(filename, new_sources, added_budget):
+def db_budget_update(tablename, new_sources, added_budget):
     
 
     added_budget = int(added_budget)
 
-    count_query = f"SELECT COUNT(*) FROM {month};"
+    count_query = f"SELECT COUNT(*) FROM {tablename};"
 
     cursor.execute(count_query)
 
@@ -116,7 +116,7 @@ def db_budget_update(filename, new_sources, added_budget):
 
     for row in range(count_fetch):
 
-        cursor.execute(f"SELECT * FROM {month}")
+        cursor.execute(f"SELECT * FROM {tablename}")
 
         fetch =  cursor.fetchall()
 
@@ -129,19 +129,19 @@ def db_budget_update(filename, new_sources, added_budget):
         new_purpose = old_purpose + "+" + new_sources
 
         if row == 0:
-            update_query = f"UPDATE {month} SET Budget = ?, Amount_left = ?, Withdrawal_purpose = ? WHERE id = {row+1};"
+            update_query = f"UPDATE {tablename} SET Budget = ?, Amount_left = ?, Withdrawal_purpose = ? WHERE id = {row+1};"
             update_args = (new_budget, new_left, new_purpose)
         else:
-            update_query = f"UPDATE {month} SET Budget = ?, Amount_left = ? WHERE id = {row+1};"
+            update_query = f"UPDATE {tablename} SET Budget = ?, Amount_left = ? WHERE id = {row+1};"
             update_args = (new_budget, new_left)
 
         cursor.execute(update_query, update_args)
 
         db.commit()
 
-    make_an_entry_query = f"INSERT INTO {month} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
 
-    cursor.execute(f"SELECT * FROM {month}")
+    cursor.execute(f"SELECT * FROM {tablename}")
 
     fetch =  cursor.fetchall()
 
@@ -161,15 +161,15 @@ def db_budget_update(filename, new_sources, added_budget):
 
 
 
-def db_generate_report(filename):
+def db_generate_report(tablename):
 
-    count_query = f"SELECT * FROM {month};"
+    count_query = f"SELECT * FROM {tablename};"
 
     cursor.execute(count_query)
 
     fetch =  cursor.fetchall()
 
-    with open(f"{month}.csv", "a", newline="") as csvfile:
+    with open(f"{tablename}.csv", "a", newline="") as csvfile:
         headers = [
             "Budget",
             "Withdraw",
@@ -184,6 +184,6 @@ def db_generate_report(filename):
         for row in fetch:
             csv_out.writerow(row)
  
-    rg.generate_report(f"{month}.csv")
+    rg.generate_report(f"{tablename}.csv")
 
 

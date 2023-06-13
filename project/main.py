@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", help="budget editing mode", action="store_true")
     parser.add_argument("-g", help="report generation mode", action="store_true")
-    parser.add_argument("-c", help="custom csv filename mode")
+    parser.add_argument("-c", help="custom filename mode")
     args = parser.parse_args()
    
    
@@ -38,15 +38,15 @@ def main():
 
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
-    file_name = str(f"{month}.csv")
+    file_name = str(f"{month}.{datatype}")
 
     # process the command line arguments
     # custom name command line argument
     if args.c:
-        if ".csv" not in args.c:
-            sys.exit("Invalid filename")
-        else:
-            file_name = args.c
+            if datatype == "csv":
+                file_name = f"{args.c}.csv"
+            elif datatype == "db":
+                file_name = args.c
     # budget editing command line argument
     if args.b:
         _, budget_sources = Gui.gui_function(
@@ -80,7 +80,7 @@ def main():
             sys.exit()
     # default program execution
     else:
-        if globals()[f"{datatype}_check_existence"](month):
+        if globals()[f"{datatype}_check_existence"](file_name):
             _, budget_sources = Gui.gui_function(
                 "Budget",
                 "The amount of money for the month: ",

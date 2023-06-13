@@ -11,7 +11,9 @@ import os
 def generate_report(file_name):
     # a function to generate a pdf report based on the csv filename given, the report contains a table with all the csv file contents
     # and all the images found in the current directory
-    report = SimpleDocTemplate("report.pdf")
+    if ".csv" in file_name:
+        reportname = file_name.split(".")
+    report = SimpleDocTemplate(f"{reportname[0]} report.pdf")
     styles = getSampleStyleSheet()
     title = "Expences of the month"
     wrapper = textwrap.TextWrapper(width=25)

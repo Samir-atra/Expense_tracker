@@ -47,7 +47,7 @@ import utils.report_generator as rg
 
 def csv_check_existence(filename):
 
-    filename = f"{filename}.csv"
+    # filename = f"{filename}.csv"
     if filename not in os.listdir():
         return True
     else:
@@ -56,8 +56,8 @@ def csv_check_existence(filename):
 
 def csv_first_entry(file_name, budget, sources):
     # a function to initiate a csv file and write the first line of it
-    print("Creating file...")
-    tm.sleep(2)
+    # print("Creating file...")
+    # tm.sleep(2)
     withdraw = 0
     purpose = "First entry budget source ({})".format(sources)
     dicti = Dictionary()
