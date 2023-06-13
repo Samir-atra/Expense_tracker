@@ -29,16 +29,16 @@ def main():
         1,
     )
 
-    if type_question[0] == "database":
-        datatype = "db"
-    elif type_question[0] == "csv":
-        datatype = "csv"
-
-
-
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
-    file_name = str(f"{month}.{datatype}")
+    
+    if type_question[0] == "database":
+        datatype = "db"
+        file_name = month
+    elif type_question[0] == "csv":
+        datatype = "csv"
+        file_name = f"{month}.csv"
+
 
     # process the command line arguments
     # custom name command line argument
@@ -47,6 +47,8 @@ def main():
                 file_name = f"{args.c}.csv"
             elif datatype == "db":
                 file_name = args.c
+
+                
     # budget editing command line argument
     if args.b:
         _, budget_sources = Gui.gui_function(
