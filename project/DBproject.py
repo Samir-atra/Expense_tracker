@@ -17,8 +17,6 @@ import time as tm
 import argparse
 import re
 import sys
-import utils.Gui as Gui
-import utils.report_generator as rg 
 import csv
 
 

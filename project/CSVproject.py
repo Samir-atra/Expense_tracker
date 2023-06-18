@@ -108,8 +108,8 @@ def csv_budget_update(file_name, new_sources, added_budget):
     except TypeError:
         sys.exit("Please, edit the csv file manually to match the correct usage.")
 
-    x.Budget = x.Budget + int(added_budget)
-    x.Amount_left = x.Amount_left + int(added_budget)
+    x.Budget = int(x.Budget[0] )+ int(added_budget)
+    x.Amount_left = int(x.Amount_left[0]) + int(added_budget)
     dicti = Dictionary()
     dic = dicti.budg_up(x.iloc[-1, 0], x.iloc[-1, 2], added_budget)
     df = pd.DataFrame(dic, index=["Time"])
