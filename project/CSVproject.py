@@ -42,12 +42,12 @@ import time as tm
 import argparse
 import re
 import sys
+from utils.report_generator import generate_report    # this import must be commented for the tests to run.
 
 
 
 def csv_check_existence(filename):
-
-    # filename = f"{filename}.csv"
+    # check if the file already exists or must be created
     if filename not in os.listdir():
         return True
     else:
@@ -119,7 +119,7 @@ def csv_budget_update(file_name, new_sources, added_budget):
     return x.at[0, "Withdrawal_purpose"]
 
 def csv_generate_report(file_name):
-    rg.generate_report(file_name)
+    generate_report(file_name)
 
 class Dictionary:
     # a class with the dictionary forms needed in the code above
@@ -162,6 +162,5 @@ class Dictionary:
         self.di[0]["Time"] = self.time
 
         return self.di
-
 
 

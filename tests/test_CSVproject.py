@@ -9,15 +9,16 @@ from project.DBproject import db_first_entry, db_make_an_entry, db_budget_update
 
 def main():
     test_csv_first_entry()
-    # test_csv_make_an_entry()
+    test_csv_make_an_entry()
     test_csv_budget_update()
     # test_csv_generate_report()
-    # test_csv_check_existence()
+    test_csv_check_existence()
 
 
 def test_csv_first_entry():
     assert csv_first_entry("beedoo.csv", 10000, "bee") == 10000
-    assert csv_first_entry("beedoo", 2000, "bee") == 2000
+    assert csv_first_entry("beedo.csv", 2000, "bee") == 2000
+    assert csv_first_entry("beedoo", 10000, "bee") == 10000
 
 
 def test_csv_make_an_entry():
@@ -26,7 +27,18 @@ def test_csv_make_an_entry():
 
 
 def test_csv_budget_update():
-    print(csv_budget_update("beedoo.csv", "inve", "2000"))
+    assert csv_budget_update("beedoo.csv", "investments", "2000") == "First entry budget source(bee+investments)"
+    assert csv_budget_update("beedo.csv", "stuff", "200") == "First entry budget source(bee+stuff)"
 
 
-main()
+def test_csv_generate_report():
+    ...
+
+
+def test_csv_check_existence():
+    assert csv_check_existence("beedoo.csv") == False
+    assert csv_check_existence("bee.csv") == True
+
+
+if __name__ == "__main__":
+    main()

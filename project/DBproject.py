@@ -18,7 +18,7 @@ import argparse
 import re
 import sys
 import csv
-
+from utils.report_generator import generate_report    # this import must be commented for the tests to run.
 
 
 
@@ -182,6 +182,6 @@ def db_generate_report(tablename):
         for row in fetch:
             csv_out.writerow(row)
  
-    rg.generate_report(f"{tablename}.csv")
+    generate_report(f"{tablename}.csv")
 
 
