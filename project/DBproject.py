@@ -18,7 +18,7 @@ import argparse
 import re
 import sys
 import csv
-from utils.report_generator import generate_report    # this import must be commented for the tests to run.
+# from utils.report_generator import generate_report    # this import must be commented for the tests to run.
 
 
 
@@ -71,7 +71,7 @@ def db_first_entry(tablename, budget, sources):
     init_entry = cursor.execute(init_entry_query, init_entry_args)
 
     db.commit()
-    
+    return budget
 
 
 def db_make_an_entry(tablename, withdraw, purpose):
@@ -97,11 +97,12 @@ def db_make_an_entry(tablename, withdraw, purpose):
 
     db.commit()
 
+    return withdrawal_purpose
 
 
 def db_budget_update(tablename, new_sources, added_budget):
     
-
+    # afunction for the budget update mode of two parts the first to update the budget
     added_budget = int(added_budget)
 
     count_query = f"SELECT COUNT(*) FROM {tablename};"
@@ -120,22 +121,28 @@ def db_budget_update(tablename, new_sources, added_budget):
 
         old_budget = fetch[row][1]
         old_left = fetch[row][3]
-        old_purpose = str(fetch[0][4])
+        
 
         new_budget = added_budget + old_budget
         new_left = added_budget + old_left
-        new_purpose = old_purpose + "+" + new_sources
 
         if row == 0:
+            old_purpose = str(fetch[0][4])
+            new_purpose = old_purpose + "+" + new_sources
             update_query = f"UPDATE {tablename} SET Budget = ?, Amount_left = ?, Withdrawal_purpose = ? WHERE id = {row+1};"
             update_args = (new_budget, new_left, new_purpose)
-        else:
+
+        elif row > 0:
             update_query = f"UPDATE {tablename} SET Budget = ?, Amount_left = ? WHERE id = {row+1};"
             update_args = (new_budget, new_left)
 
         cursor.execute(update_query, update_args)
+        
 
         db.commit()
+
+    # the second part of the function is to add an entry for the table with 
+    # the amount, time and date of the budget update
 
     make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
 
@@ -156,6 +163,8 @@ def db_budget_update(tablename, new_sources, added_budget):
     make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
 
     db.commit()
+
+    return new_purpose
 
 
 

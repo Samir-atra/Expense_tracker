@@ -4,7 +4,6 @@ sys.path.append("..")
 from project.utils import Gui
 from project.utils import report_generator
 from project.CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report, csv_check_existence
-from project.DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, db_check_existence
 
 
 def main():
