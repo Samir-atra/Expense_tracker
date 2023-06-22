@@ -54,10 +54,10 @@ def csv_check_existence(filename):
         return False
 
 
-def csv_first_entry(file_name, budget, sources):
+def csv_first_entry(file_name, budget, sources, currency):
     # a function to initiate a csv file and write the first line of it
     withdraw = 0
-    purpose = "First entry budget source ({})".format(sources)
+    purpose = f"First entry budget source ({sources}), currency of the file: {currency}"
     dicti = Dictionary()
     dic = dicti.update(budget, withdraw, purpose)
     the_writer(file_name, dic, True)
@@ -120,6 +120,20 @@ def csv_budget_update(file_name, new_sources, added_budget):
 
 def csv_generate_report(file_name):
     generate_report(file_name)
+
+
+def csv_currency_update(file_name, currency):
+    with open(file_name, "r") as file:
+        data = file.readlines()
+        lastRow = data[-1]
+        l = lastRow.split(",")
+        budget = l[2]
+        withdraw = 0
+        purpose = f"A currency update to ({currency}) happened on: "
+    dicti = Dictionary()
+    dic = dicti.update(budget, withdraw, purpose)
+    the_writer(file_name, dic, False)
+
 
 class Dictionary:
     # a class with the dictionary forms needed in the code above

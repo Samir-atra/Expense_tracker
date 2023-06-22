@@ -1,5 +1,8 @@
-from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, db_check_existence
-from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report, csv_check_existence
+# add the currency change and update feature.
+# connect a currency exchange API even if (USD, EUR) only.
+
+from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, db_check_existence, db_currency_update
+from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report, csv_check_existence, csv_currency_update
 from datetime import datetime
 import os
 import argparse
@@ -17,6 +20,7 @@ def main():
     parser.add_argument("-b", help="budget editing mode", action="store_true")
     parser.add_argument("-g", help="report generation mode", action="store_true")
     parser.add_argument("-c", help="custom filename mode")
+    parser.add_argument("-cu", help="currncy update mode", action="store_true")
     args = parser.parse_args()
    
    
@@ -48,7 +52,7 @@ def main():
             elif datatype == "db":
                 file_name = args.c
 
-                
+    
     # budget editing command line argument
     if args.b:
         _, budget_sources = Gui.gui_function(
@@ -60,6 +64,17 @@ def main():
             2,
         )
         globals()[f"{datatype}_budget_update"](file_name, budget_sources[0], budget_sources[1])
+    # currency update command line argument
+    elif args.cu:
+        _, new_currency = Gui.gui_function(
+            "Currency upddate",
+            "New currency (usd/ eur):",
+            "",
+            "Submit",
+            "Cancel",
+            1,
+        )
+        globals()[f"{datatype}_currency_update"](file_name, new_currency[0])
     # report generation command line argument
     elif args.g:
         d = os.getcwd()
@@ -91,8 +106,9 @@ def main():
                 "Cancel",
                 2,
             )
+            _, currency = Gui.gui_function("", "Currency(usd/ eur): ", "", "Submit", "Cancel", 1)
             globals()[f"{datatype}_first_entry"](
-                file_name, budget_sources[0], budget_sources[1]
+                file_name, budget_sources[0], budget_sources[1], currency[0]
             )
             _, q = Gui.gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":

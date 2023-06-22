@@ -18,7 +18,7 @@ import argparse
 import re
 import sys
 import csv
-# from utils.report_generator import generate_report    # this import must be commented for the tests to run.
+from utils.report_generator import generate_report    # this import must be commented for the tests to run.
 
 
 
@@ -52,7 +52,7 @@ def db_check_existence(tablename):
 
 
 
-def db_first_entry(tablename, budget, sources):
+def db_first_entry(tablename, budget, sources, currency):
 
     create_table_query = f"CREATE TABLE IF NOT EXISTS {tablename} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
 
@@ -66,7 +66,7 @@ def db_first_entry(tablename, budget, sources):
 
     init_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
 
-    init_entry_args = (budget, budget, f"First entry budget source(s): {sources}", date, time)
+    init_entry_args = (budget, budget, f"First entry budget source(s): {sources}, currency of the file: {currency}", date, time)
 
     init_entry = cursor.execute(init_entry_query, init_entry_args)
 
@@ -193,4 +193,26 @@ def db_generate_report(tablename):
  
     generate_report(f"{tablename}.csv")
 
+
+def db_currency_update(tablename, currency):
+    
+    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+
+    cursor.execute(f"SELECT * FROM {tablename}")
+
+    fetch =  cursor.fetchall()
+
+    budget = fetch[-1][3]
+
+    withdraw = 0
+
+    left = budget
+
+    withdrawal_purpose = f"A currency update to ({currency}) happened on:"
+
+    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
+
+    make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
+
+    db.commit()
 
