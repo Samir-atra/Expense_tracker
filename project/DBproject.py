@@ -9,7 +9,6 @@ create functions for:
     - check the queries quality and safty
 """
 
-from flask import Flask, g
 import sqlite3
 from datetime import datetime
 import os

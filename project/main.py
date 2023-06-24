@@ -106,7 +106,7 @@ def main():
                 "Cancel",
                 2,
             )
-            _, currency = Gui.gui_function("", "Currency(usd/ eur): ", "", "Submit", "Cancel", 1)
+            _, currency = Gui.gui_function("", "Currency: ", "", "Submit", "Cancel", 1)
             globals()[f"{datatype}_first_entry"](
                 file_name, budget_sources[0], budget_sources[1], currency[0]
             )
