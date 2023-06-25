@@ -24,7 +24,7 @@ def main():
 
 def convert_currency(trans_from, trans_to, amount):
 
-    client = freecurrencyapi.Client('cgFct61Ju3nuTpM0Yv99JoxRgsLplbr2gsC9Nkvv')
+    client = freecurrencyapi.Client('API-key')
 
     transfer_rate = client.latest([f"{trans_from}"])["data"][f"{trans_to}"]
 
