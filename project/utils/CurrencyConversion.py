@@ -30,6 +30,7 @@ def convert_currency(trans_from, trans_to, amount):
 
     new_amount = amount * transfer_rate
     print(new_amount)
+    
     return new_amount
 
 
