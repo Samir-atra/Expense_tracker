@@ -42,8 +42,9 @@ import time as tm
 import argparse
 import re
 import sys
-from utils.report_generator import generate_report    # this import must be commented for the tests to run.
-
+from utils.report_generator import (
+    generate_report,
+)  # this import must be commented for the tests to run.
 
 
 def csv_check_existence(filename):
@@ -108,7 +109,7 @@ def csv_budget_update(file_name, new_sources, added_budget):
     except TypeError:
         sys.exit("Please, edit the csv file manually to match the correct usage.")
 
-    x.Budget = int(x.Budget[0] )+ int(added_budget)
+    x.Budget = int(x.Budget[0]) + int(added_budget)
     x.Amount_left = int(x.Amount_left[0]) + int(added_budget)
     dicti = Dictionary()
     dic = dicti.budg_up(x.iloc[-1, 0], x.iloc[-1, 2], added_budget)
@@ -117,6 +118,7 @@ def csv_budget_update(file_name, new_sources, added_budget):
     x.to_csv(file_name, index=False)
 
     return x.at[0, "Withdrawal_purpose"]
+
 
 def csv_generate_report(file_name):
     generate_report(file_name)
@@ -171,10 +173,10 @@ class Dictionary:
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = 0
         self.di[0]["Amount_left"] = amount_left
-        self.di[0]["Withdrawal_purpose"] = f"A budget update ({added_budget}) happened on: "
+        self.di[0][
+            "Withdrawal_purpose"
+        ] = f"A budget update ({added_budget}) happened on: "
         self.di[0]["Date"] = self.date
         self.di[0]["Time"] = self.time
 
         return self.di
-
-

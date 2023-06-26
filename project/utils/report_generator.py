@@ -7,7 +7,6 @@ import textwrap
 import os
 
 
-
 def generate_report(file_name):
     # a function to generate a pdf report based on the csv filename given, the report contains a table with all the csv file contents
     # and all the images found in the current directory

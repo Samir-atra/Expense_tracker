@@ -31,4 +31,3 @@ def gui_function(win_title, text1, text2, submit, cancel, size):
 
 if __name__ == "__main__":
     gui_function()
-    

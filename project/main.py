@@ -1,20 +1,32 @@
 # add the currency change and update feature.
 # connect a currency exchange API even if (USD, EUR) only.
 
-from DBproject import db_first_entry, db_make_an_entry, db_budget_update, db_generate_report, db_check_existence, db_currency_update
-from CSVproject import csv_first_entry, csv_make_an_entry, csv_budget_update, csv_generate_report, csv_check_existence, csv_currency_update
+from DBproject import (
+    db_first_entry,
+    db_make_an_entry,
+    db_budget_update,
+    db_generate_report,
+    db_check_existence,
+    db_currency_update,
+)
+from CSVproject import (
+    csv_first_entry,
+    csv_make_an_entry,
+    csv_budget_update,
+    csv_generate_report,
+    csv_check_existence,
+    csv_currency_update,
+)
 from datetime import datetime
 import os
 import argparse
 import sys
 import utils.Gui as Gui
-import utils.report_generator as rg 
-
+import utils.report_generator as rg
 
 
 def main():
-   
-   
+
     # parse the command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", help="budget editing mode", action="store_true")
@@ -22,8 +34,7 @@ def main():
     parser.add_argument("-c", help="custom filename mode")
     parser.add_argument("-cu", help="currncy update mode", action="store_true")
     args = parser.parse_args()
-   
-   
+
     _, type_question = Gui.gui_function(
         "Choose type",
         f"Please, select the data saving type and click submit (csv, database): ",
@@ -35,7 +46,7 @@ def main():
 
     # generate the default file name which is the current month and year
     month = datetime.now().strftime("%B_%Y")
-    
+
     if type_question[0] == "database":
         datatype = "db"
         file_name = month
@@ -43,16 +54,14 @@ def main():
         datatype = "csv"
         file_name = f"{month}.csv"
 
-
     # process the command line arguments
     # custom name command line argument
     if args.c:
-            if datatype == "csv":
-                file_name = f"{args.c}.csv"
-            elif datatype == "db":
-                file_name = args.c
+        if datatype == "csv":
+            file_name = f"{args.c}.csv"
+        elif datatype == "db":
+            file_name = args.c
 
-    
     # budget editing command line argument
     if args.b:
         _, budget_sources = Gui.gui_function(
@@ -63,7 +72,9 @@ def main():
             "Cancel",
             2,
         )
-        globals()[f"{datatype}_budget_update"](file_name, budget_sources[0], budget_sources[1])
+        globals()[f"{datatype}_budget_update"](
+            file_name, budget_sources[0], budget_sources[1]
+        )
     # currency update command line argument
     elif args.cu:
         _, new_currency = Gui.gui_function(
@@ -110,7 +121,9 @@ def main():
             globals()[f"{datatype}_first_entry"](
                 file_name, budget_sources[0], budget_sources[1], currency[0]
             )
-            _, q = Gui.gui_function("", "Any entries now(y/n): ", "", "Submit", "Cancel", 1)
+            _, q = Gui.gui_function(
+                "", "Any entries now(y/n): ", "", "Submit", "Cancel", 1
+            )
             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
                 _, withdraw_amount_purpose = Gui.gui_function(
                     "Withdrawal",
