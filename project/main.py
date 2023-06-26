@@ -79,7 +79,7 @@ def main():
     elif args.cu:
         _, new_currency = Gui.gui_function(
             "Currency upddate",
-            "New currency (usd/ eur):",
+            "New currency:",
             "",
             "Submit",
             "Cancel",

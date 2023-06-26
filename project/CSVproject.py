@@ -45,6 +45,7 @@ import sys
 from utils.report_generator import (
     generate_report,
 )  # this import must be commented for the tests to run.
+from utils.CurrencyConversion import convert_currency
 
 
 def csv_check_existence(filename):
@@ -58,9 +59,9 @@ def csv_check_existence(filename):
 def csv_first_entry(file_name, budget, sources, currency):
     # a function to initiate a csv file and write the first line of it
     withdraw = 0
-    purpose = f"First entry budget source ({sources}), currency of the file: {currency}"
+    purpose = f"First entry budget source ({sources})"
     dicti = Dictionary()
-    dic = dicti.update(budget, withdraw, purpose)
+    dic = dicti.entry(budget, withdraw, purpose, currency)
     the_writer(file_name, dic, True)
 
     return dic[0]["Budget"]
@@ -73,8 +74,9 @@ def csv_make_an_entry(file_name, withdraw, purpose):
         lastRow = data[-1]
         l = lastRow.split(",")
         budget = l[2]
+        currency = l[6].strip()
     dicti = Dictionary()
-    dic = dicti.update(budget, withdraw, purpose)
+    dic = dicti.entry(budget, withdraw, purpose, currency)
     the_writer(file_name, dic, False)
 
     return dic[0]["Withdrawal_purpose"]
@@ -90,6 +92,7 @@ def the_writer(file_name, dic, type):
             "Withdrawal_purpose",
             "Date",
             "Time",
+            "Currency",
         ]
         csvwriter = csv.DictWriter(csvfile, fieldnames=headers)
         if type:
@@ -109,10 +112,10 @@ def csv_budget_update(file_name, new_sources, added_budget):
     except TypeError:
         sys.exit("Please, edit the csv file manually to match the correct usage.")
 
-    x.Budget = int(x.Budget[0]) + int(added_budget)
-    x.Amount_left = int(x.Amount_left[0]) + int(added_budget)
+    x.Budget = x.Budget + int(added_budget)
+    x.Amount_left = x.Amount_left + int(added_budget)
     dicti = Dictionary()
-    dic = dicti.budg_up(x.iloc[-1, 0], x.iloc[-1, 2], added_budget)
+    dic = dicti.update(x.iloc[-1, 0], x.iloc[-1, 2], f"A budget update ({added_budget}) happened on: ", x.iloc[-1, 6])
     df = pd.DataFrame(dic, index=["Time"])
     x = pd.concat([x, df], ignore_index=True)
     x.to_csv(file_name, index=False)
@@ -124,17 +127,20 @@ def csv_generate_report(file_name):
     generate_report(file_name)
 
 
-def csv_currency_update(file_name, currency):
-    with open(file_name, "r") as file:
-        data = file.readlines()
-        lastRow = data[-1]
-        l = lastRow.split(",")
-        budget = l[2]
-        withdraw = 0
-        purpose = f"A currency update to ({currency}) happened on: "
+def csv_currency_update(file_name, new_currency):
+
+    x = pd.DataFrame(pd.read_csv(file_name))
+    old_currency = x.iloc[-1, 6]
+    exchange_rate = convert_currency(old_currency, new_currency, 1)
+    x.Budget = x.Budget * float(exchange_rate)
+    x.Withdraw = x.Withdraw * float(exchange_rate)
+    x.Amount_left = x.Amount_left * float(exchange_rate)
+    x.Currency = new_currency
     dicti = Dictionary()
-    dic = dicti.update(budget, withdraw, purpose)
-    the_writer(file_name, dic, False)
+    dic = dicti.update(x.iloc[-1, 0], x.iloc[-1, 2], f"A currency update from {old_currency} to ({new_currency}) happened on: ", new_currency)
+    df = pd.DataFrame(dic, index=["Time"])
+    x = pd.concat([x, df], ignore_index=True)
+    x.to_csv(file_name, index=False)
 
 
 class Dictionary:
@@ -148,12 +154,13 @@ class Dictionary:
                 "Withdrawal_purpose": "",
                 "Date": "",
                 "Time": "",
+                "Currency": "",
             }
         ]
         self.date = datetime.now().strftime("%x")
         self.time = datetime.now().strftime("%X")
 
-    def update(self, budget, withdraw, purpose):
+    def entry(self, budget, withdraw,  purpose, currency):
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = withdraw
         try:
@@ -166,17 +173,17 @@ class Dictionary:
         self.di[0]["Withdrawal_purpose"] = purpose
         self.di[0]["Date"] = self.date
         self.di[0]["Time"] = self.time
+        self.di[0]["Currency"] = currency
 
         return self.di
 
-    def budg_up(self, budget, amount_left, added_budget):
+    def update(self, budget, amount_left, purpose, currency):
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = 0
         self.di[0]["Amount_left"] = amount_left
-        self.di[0][
-            "Withdrawal_purpose"
-        ] = f"A budget update ({added_budget}) happened on: "
+        self.di[0]["Withdrawal_purpose"] = purpose
         self.di[0]["Date"] = self.date
         self.di[0]["Time"] = self.time
+        self.di[0]["Currency"] = currency
 
         return self.di
