@@ -17,6 +17,7 @@ import argparse
 import re
 import sys
 import csv
+from utils.CurrencyConversion import convert_currency
 from utils.report_generator import (
     generate_report,
 )  # this import must be commented for the tests to run.
@@ -54,7 +55,7 @@ def db_check_existence(tablename):
 
 def db_first_entry(tablename, budget, sources, currency):
 
-    create_table_query = f"CREATE TABLE IF NOT EXISTS {tablename} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT)"
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {tablename} (Id INTEGER PRIMARY KEY AUTOINCREMENT, Budget INTEGER, Withdraw INTEGER, Amount_left INTEGER, Withdrawal_purpose TEXT, Date TEXT, Time TEXT, Currency TEXT)"
 
     create_table = cursor.execute(create_table_query)
 
@@ -64,7 +65,7 @@ def db_first_entry(tablename, budget, sources, currency):
 
     sources = sources
 
-    init_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, 0, ?, ?, ?, ?);"
+    init_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time, Currency) VALUES (?, 0, ?, ?, ?, ?, ?);"
 
     init_entry_args = (
         budget,
@@ -72,6 +73,7 @@ def db_first_entry(tablename, budget, sources, currency):
         f"First entry budget source(s): {sources}, currency of the file: {currency}",
         date,
         time,
+        currency,
     )
 
     init_entry = cursor.execute(init_entry_query, init_entry_args)
@@ -82,7 +84,7 @@ def db_first_entry(tablename, budget, sources, currency):
 
 def db_make_an_entry(tablename, withdraw, purpose):
 
-    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time, Currency) VALUES (?, ?, ?, ?, ?, ?, ?)"
 
     cursor.execute(f"SELECT * FROM {tablename}")
 
@@ -95,8 +97,8 @@ def db_make_an_entry(tablename, withdraw, purpose):
     left = int(budget) - int(withdraw)
 
     withdrawal_purpose = purpose
-
-    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
+    currency = fetch[-1][7]
+    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time, currency)
 
     make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
 
@@ -147,21 +149,19 @@ def db_budget_update(tablename, new_sources, added_budget):
     # the second part of the function is to add an entry for the table with
     # the amount, time and date of the budget update
 
-    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
+    make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time, Currency) VALUES (?, ?, ?, ?, ?, ?, ?)"
 
     cursor.execute(f"SELECT * FROM {tablename}")
 
     fetch = cursor.fetchall()
 
     budget = fetch[-1][3]
-
     withdraw = 0
-
     left = budget
-
+    currency = fetch[-1][7]
     withdrawal_purpose = f"A budget update ({added_budget}) happened on:"
 
-    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
+    make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time, currency)
 
     make_an_entry = cursor.execute(make_an_entry_query, make_an_entry_args)
 
@@ -186,6 +186,7 @@ def db_generate_report(tablename):
             "Withdrawal_purpose",
             "Date",
             "Time",
+            "Currency",
         ]
 
         csv_out = csv.writer(csvfile)
@@ -196,21 +197,44 @@ def db_generate_report(tablename):
     generate_report(f"{tablename}.csv")
 
 
-def db_currency_update(tablename, currency):
+def db_currency_update(tablename, new_currency):
 
     make_an_entry_query = f"INSERT INTO {tablename} (Budget, Withdraw, Amount_left, Withdrawal_purpose, Date, Time) VALUES (?, ?, ?, ?, ?, ?)"
-
     cursor.execute(f"SELECT * FROM {tablename}")
-
     fetch = cursor.fetchall()
 
     budget = fetch[-1][3]
-
     withdraw = 0
-
     left = budget
+    old_currency = fetch[-1][7]
+    exchange_rate = convert_currency(old_currency, new_currency, 1)
 
-    withdrawal_purpose = f"A currency update to ({currency}) happened on:"
+    count_query = f"SELECT COUNT(*) FROM {tablename};"
+    cursor.execute(count_query)
+    countfetch = cursor.fetchall()
+    count_fetch = countfetch[0][0]
+    for row in range(count_fetch):
+
+        cursor.execute(f"SELECT * FROM {tablename}")
+
+        fetch = cursor.fetchall()
+
+        old_budget = fetch[row][1]
+        old_withdraw = fetch[row][2]
+        old_left = fetch[row][3]
+
+        new_budget = old_budget * exchange_rate
+        new_withdraw = old_withdraw * exchange_rate
+        new_left = old_left * exchange_rate
+
+        
+        update_query = f"UPDATE {tablename} SET Budget = ?, Withdraw = ?, Amount_left = ?, Currency = ? WHERE id = {row+1};"
+        update_args = (new_budget, new_withdraw, new_left, new_currency)
+
+        cursor.execute(update_query, update_args)
+
+        db.commit()
+    withdrawal_purpose = f"A currency update from {old_currency} to ({new_currency}) happened on:"
 
     make_an_entry_args = (budget, withdraw, left, withdrawal_purpose, date, time)
 

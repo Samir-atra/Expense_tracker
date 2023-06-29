@@ -5,4 +5,6 @@ CREATE TABLE IF NOT EXISTS month
     Amount_left INTEGER, 
     Withdrawal_purpose TEXT, 
     Date TEXT, 
-    Time TEXT);
+    Time TEXT,
+    Currency TEXT,
+    );
