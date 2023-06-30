@@ -103,24 +103,20 @@ def the_writer(file_name, dic, type):
 
 def csv_budget_update(file_name, new_sources, added_budget):
     # a function to make the necessary edits to the csv file when a budget edit is needed
-    x = pd.DataFrame(pd.read_csv(file_name))
-    old_sources = re.search("\(([a-zA-Z+ ]*)\)", x.at[0, "Withdrawal_purpose"])
-    try:
-        x.at[0, "Withdrawal_purpose"] = "First entry budget source({}+{})".format(
-            old_sources[1], new_sources
-        )
-    except TypeError:
-        sys.exit("Please, edit the csv file manually to match the correct usage.")
+     with open(file_name, "r") as file:
+        data = file.readlines()
+        lastRow = data[-1]
+        l = lastRow.split(",")
+        budget = float(l[2]) + float(added_budget)
+        print("this is l2: ",l[2], "this is added_budget: ", added_budget, "this is budget: ", budget)
+        amount_left = budget
+        withdrawal_purpose = f"A budget update ({added_budget} from {new_sources}) happened on: "
+        currency = l[6].strip()
+        dicti = Dictionary()
+        dic = dicti.update(budget, amount_left, withdrawal_purpose, currency)
+        the_writer(file_name, dic, False)
 
-    x.Budget = x.Budget + int(added_budget)
-    x.Amount_left = x.Amount_left + int(added_budget)
-    dicti = Dictionary()
-    dic = dicti.update(x.iloc[-1, 0], x.iloc[-1, 2], f"A budget update ({added_budget}) happened on: ", x.iloc[-1, 6])
-    df = pd.DataFrame(dic, index=["Time"])
-    x = pd.concat([x, df], ignore_index=True)
-    x.to_csv(file_name, index=False)
-
-    return x.at[0, "Withdrawal_purpose"]
+        return dic
 
 
 def csv_generate_report(file_name):
@@ -131,13 +127,15 @@ def csv_currency_update(file_name, new_currency):
 
     x = pd.DataFrame(pd.read_csv(file_name))
     old_currency = x.iloc[-1, 6]
+    if new_currency == old_currency:
+        raise Exception("The file is already in the required currency")
     exchange_rate = convert_currency(old_currency, new_currency, 1)
     x.Budget = x.Budget * float(exchange_rate)
     x.Withdraw = x.Withdraw * float(exchange_rate)
     x.Amount_left = x.Amount_left * float(exchange_rate)
     x.Currency = new_currency
     dicti = Dictionary()
-    dic = dicti.update(x.iloc[-1, 0], x.iloc[-1, 2], f"A currency update from {old_currency} to ({new_currency}) happened on: ", new_currency)
+    dic = dicti.update(f"{x.iloc[-1, 0]:.2f}", f"{x.iloc[-1, 2]:.2f}", f"A currency update from {old_currency} to ({new_currency}) happened on: ", new_currency)
     df = pd.DataFrame(dic, index=["Time"])
     x = pd.concat([x, df], ignore_index=True)
     x.to_csv(file_name, index=False)
