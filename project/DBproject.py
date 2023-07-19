@@ -70,7 +70,7 @@ def db_first_entry(tablename, budget, sources, currency):
     init_entry_args = (
         budget,
         budget,
-        f"First entry budget source(s): {sources}, currency of the file: {currency}",
+        f"First entry budget source(s): {sources}",
         date,
         time,
         currency,
@@ -158,7 +158,8 @@ def db_generate_report(tablename):
         csv_out = csv.writer(csvfile)
         csv_out.writerow(headers)
         for row in fetch:
-            csv_out.writerow(row)
+            csv_out.writerow(row[1:])
+
 
     generate_report(f"{tablename}.csv")
 

@@ -108,7 +108,6 @@ def csv_budget_update(file_name, new_sources, added_budget):
         lastRow = data[-1]
         l = lastRow.split(",")
         budget = float(l[2]) + float(added_budget)
-        print("this is l2: ",l[2], "this is added_budget: ", added_budget, "this is budget: ", budget)
         amount_left = budget
         withdrawal_purpose = f"A budget update ({added_budget} from {new_sources}) happened on: "
         currency = l[6].strip()
@@ -130,6 +129,7 @@ def csv_currency_update(file_name, new_currency):
     if new_currency == old_currency:
         raise Exception("The file is already in the required currency")
     exchange_rate = convert_currency(old_currency, new_currency, 1)
+    exchange_rate = "{:.2f}".format(exchange_rate)
     x.Budget = x.Budget * float(exchange_rate)
     x.Withdraw = x.Withdraw * float(exchange_rate)
     x.Amount_left = x.Amount_left * float(exchange_rate)
