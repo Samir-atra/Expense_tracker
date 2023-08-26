@@ -45,7 +45,7 @@ import sys
 from utils.report_generator import (
     generate_report,
 )  # this import must be commented for the tests to run.
-from utils.CurrencyConversion import convert_currency
+from utils.FXTrade import convert_currency
 
 
 def csv_check_existence(filename):
