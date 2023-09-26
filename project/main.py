@@ -23,6 +23,7 @@ import argparse
 import sys
 import utils.Gui as Gui
 import utils.report_generator as rg
+import utils.take_a_photo as tp
 
 
 def main():
@@ -136,6 +137,14 @@ def main():
                 globals()[f"{datatype}_make_an_entry"](
                     file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
                 )
+
+                _, q = Gui.gui_function(
+                "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
+                )
+                if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
+                    tp.capture()
+
+
 
             elif q[0] == "n" or q[0] == "N" or q[0] == "no" or q[0] == "No":
                 pass

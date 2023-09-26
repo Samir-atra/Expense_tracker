@@ -1,13 +1,17 @@
 import cv2 as cv
 
+def capture():
 
-x = 1
-cam = cv.VideoCapture(0)   
-# s, img = cam.read()
-while x == 1:
-    ret, frame = cam.read()
-    cv.imshow('frame', frame)
-    cv.waitKey(0)
-    x = input("what is x")
-    # cv.destroyWindow("cam-test")
-    # cv.imwrite("filename.jpg",img)
+    cam = cv.VideoCapture(0)   
+    s, img = cam.read()
+    if s:
+        # ret, frame = cam.read()
+        cv.imshow('image', img)
+        cv.waitKey(0)
+        # x = input("what is x")
+        cv.imwrite("img.jpg",img)
+        # cv.destroyWindow("cam-test")
+    return True
+
+if __name__ == "__main__":
+    capture()
