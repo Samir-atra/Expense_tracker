@@ -161,6 +161,13 @@ def main():
                 file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
             )
 
+            _, q = Gui.gui_function(
+            "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
+            )
+            if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
+                tp.capture()
+
+
 
 if __name__ == "__main__":
     main()
