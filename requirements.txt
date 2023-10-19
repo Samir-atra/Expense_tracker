@@ -1,5 +1,4 @@
-opencv-python
+tensorflow
 pandas
 reportlab
 PySimpleGUI
-Flask
