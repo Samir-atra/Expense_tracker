@@ -46,7 +46,8 @@ def main():
     )
 
     # generate the default file name which is the current month and year
-    month = datetime.now().strftime("%B_%Y")
+    date_time = datetime.now()
+    month = date_time.strftime("%B_%Y")
 
     if type_question[0] == "database":
         datatype = "db"
@@ -89,24 +90,8 @@ def main():
         globals()[f"{datatype}_currency_update"](file_name, new_currency[0])
     # report generation command line argument
     elif args.g:
-        d = os.getcwd()
-        _, question = Gui.gui_function(
-            "Question",
-            f"Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n): ",
-            "",
-            "Submit",
-            "Cancel",
-            1,
-        )
-        if (
-            question[0] == "y"
-            or question[0] == "yes"
-            or question[0] == "Yes"
-            or question[0] == "Y"
-        ):
-            globals()[f"{datatype}_generate_report"](file_name)
-        else:
-            sys.exit()
+        globals()[f"{datatype}_generate_report"](file_name)
+
     # default program execution
     else:
         if globals()[f"{datatype}_check_existence"](file_name):

@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 def convert_currency(trans_from, trans_to, amount):
 
@@ -7,7 +8,10 @@ def convert_currency(trans_from, trans_to, amount):
 
 
     # to get the mid rate of the currency exchange
-    transfer_rate = float(x.stdout.decode('utf-8').strip().split()[10].strip(","))
+    try:
+        transfer_rate = float(x.stdout.decode('utf-8').strip().split()[10].strip(","))
+    except ValueError:
+        sys.exit("Please, update your FXAPI access token")
     # print("this is transfer rate",transfer_rate)
     new_amount = amount * transfer_rate
     # print(new_amount)

@@ -5,6 +5,7 @@ from reportlab.lib import colors
 import sys
 import textwrap
 import os
+from utils.image_predictor import predict_image
 
 
 def generate_report(file_name):
@@ -44,11 +45,10 @@ def generate_report(file_name):
         middle_title,
         empty_line,
     ]
-    for file in os.listdir():
-        if ".jpg" in file.lower() or ".png" in file.lower():
-            image = Image(file, width=300, height=300)
-            arguments.append(image)
-            arguments.append(empty_line)
+    pred_dict = predict_image()
+    item_list = [f"{item} <br/>" for item in pred_dict.items()]
+    arguments.append(Paragraph(f"Counts of image types in the image directory: {item_list}", styles["h1"]))
+    arguments.append(empty_line)
     report.build(arguments)
 
 
