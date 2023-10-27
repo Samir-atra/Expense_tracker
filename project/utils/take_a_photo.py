@@ -1,8 +1,10 @@
 import cv2 as cv
 from datetime import datetime
+import os
 
 def capture():
-
+# a function to capture a photo and save it with the title as the current time
+    path = os.getcwd()
     cam = cv.VideoCapture(0)   
     # s, img = cam.read()
     while (True):
@@ -12,7 +14,7 @@ def capture():
             break
         # x = input("what is x")
         title = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
-    cv.imwrite(f"/home/samer/Desktop/Beedoo/Expenses_tracker/project/utils/Images/images/{title}.jpg",frame)
+    cv.imwrite(f"{path}/Images/images/{title}.jpg",frame)
     cv.destroyWindow("cam-test")
     return True
 

@@ -1,4 +1,4 @@
-tensorflow
-pandas
-reportlab
-PySimpleGUI
+tensorflow==2.14
+pandas==2.1.1
+reportlab==4.0.6
+PySimpleGUI==4.60.5

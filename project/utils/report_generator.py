@@ -27,7 +27,6 @@ def generate_report(file_name):
     except FileNotFoundError:
         sys.exit("Could not find a csv file with the provided name.")
     report_title = Paragraph(title, styles["h1"])
-    middle_title = Paragraph("Images of related documents:", styles["h1"])
     empty_line = Spacer(1, 20)
     content = Table(
         table,
@@ -42,12 +41,25 @@ def generate_report(file_name):
         empty_line,
         content,
         empty_line,
-        middle_title,
         empty_line,
     ]
+
+    items_list = []
     pred_dict = predict_image()
-    item_list = [f"{item} <br/>" for item in pred_dict.items()]
-    arguments.append(Paragraph(f"Counts of image types in the image directory: {item_list}", styles["h1"]))
+    keys_list = [item for item in pred_dict.keys()]
+    values_list = [item for item in pred_dict.values()]
+    for i in range (len(keys_list)):
+        items_list.append(list((keys_list[i],values_list[i])))
+    classes_table = Table(
+    items_list,
+    style=[
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+        ("BOX", (0, 0), (-1, -1), 0.5, colors.black),
+    ],
+    )
+    arguments.append(Paragraph(f"Counts of image types in the image directory:", styles["h1"]))
+    arguments.append(classes_table)
     arguments.append(empty_line)
     report.build(arguments)
 

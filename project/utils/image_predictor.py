@@ -1,9 +1,14 @@
 import tensorflow as tf
 import pathlib
 import numpy as np
+import os
+import sys
 
 def predict_image():
 
+# a function to predict the classed of the images using the model saved in the full_mode_saving_path
+
+    path = os.getcwd()
     pred_dict = {"ADVE":0,
     "Email":0,         
     "Empty_papers":0,
@@ -19,7 +24,7 @@ def predict_image():
 
     full_model_saving_path = pathlib.Path('/home/samer/Desktop/Beedoo/Expenses_tracker_stuff/expenses_tracker_model.h5')
     loaded_model = tf.keras.models.load_model(full_model_saving_path, compile=True)
-    pred_img_path = pathlib.Path('/home/samer/Desktop/Beedoo/Expenses_tracker/project/utils/Images/')
+    pred_img_path = pathlib.Path(f'{path}/Images/')
 
 
     loaded_model.compile(
@@ -27,16 +32,17 @@ def predict_image():
         loss=tf.losses.SparseCategoricalCrossentropy(from_logits= True),
         metrics=['accuracy'],
         run_eagerly = False)
-
-    dataset_pathy = tf.keras.utils.image_dataset_from_directory(
-        pred_img_path,
-        labels= 'inferred',
-        seed= 1,
-        batch_size=1,
-        image_size=(300, 300),
-        color_mode="rgb",
-        shuffle=False)
-
+    try:
+        dataset_pathy = tf.keras.utils.image_dataset_from_directory(
+            pred_img_path,
+            labels= 'inferred',
+            seed= 1,
+            batch_size=1,
+            image_size=(300, 300),
+            color_mode="rgb",
+            shuffle=False)
+    except ValueError:
+        sys.exit("Please, add images to the directory, to be classified")
 
     sample_list = []                                                        # creating a list of sample(s)
     for sample, _ in dataset_pathy:
@@ -57,6 +63,7 @@ def predict_image():
     11:"Scientific",}
 
     sample_list = np.array(sample_list)
+
     for sample in sample_list:
         predictions = loaded_model.predict(sample)
         pred = np.argmax(predictions, axis=1)

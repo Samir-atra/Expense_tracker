@@ -1,85 +1,88 @@
 # Expenses tracker
 # A work in progress
-## Demo video: https://youtu.be/nruasnClqvc
+
 
 ## General description:
-This is the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language
-that have been learned during the course.
+Originally, this was the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language that have been learned during the course, and later after the course many improvemets and 
+features got added.
 
-the main functionality of the project is to track the daily expenses of the household, a project, or some other use the
-customer may find it fit since it is built to have a single deposit and many withdrawals and that model does not fit
-best for businesses since it would probably require many deposits and many withdrawals.
+The main functionality of the project is to track the daily expenses of the household, a project, or some other use the
+customer may find it fit since it is built to have a single deposit and many withdrawals and it may not fit
+best for businesses that require many deposits.
 
-when this project is used by the household or projects it makes tracking everyday payments easier since with every withdrawal
-added it calculates what is left from the initial budget and besides that, it documents the purposes, dates, and times for
-all the entries in a csv file, and creates a new file for each month with the ability to create more files other than the default
-ones with custom names.
+When this project is used it makes tracking everyday payments easier since with every withdrawal
+added it calculates what is left from the initial budget and besides that, it documents the purposes, dates, times and currencies for all the entries in a recording document (csv file or database table) and creates a new recording document for each month with the ability to create more documents other than the default ones with custom names.
 
-working on this project helped me better understand the materials discussed in the course's lectures in addition to learning
-how to use some new libraries and apply new concepts such as using Pandas to edit entire columns and concatenating data
-frames to get new content for the csv file and manage a budget update that will affect the whole file. in addition to Pandas
-I practiced how to use reportlab which is a library made to make generating pdf files easier and add text, tables, and
-images to the document in a straightforward way, also another library that I used is PySimpleGUI to create a simple graphical
-user interface that will make the program easier for the user to interact with.
+Working on this project helped me better understand the materials discussed in the course's lectures in addition to learning
+how to use some new libraries and frameworks or deepen my knowledge in others and apply new concepts such as using Pandas to edit entire columns and concatenating dataframes to get new content for the csv file and manage a currency or budget update that will affect the whole file. in addition to Pandas I practiced how to use reportlab which is a library made to make generating pdf files easier and add text, tables, and images to the document in a straightforward way, also another library that I used is PySimpleGUI to create a simple graphical user interface that will make the program easier for the user to interact with. and in addition to that integrated a deeplearning classification algorithm using tensorflow framework to predict the contents of the photos been taken as entries for the project. 
 
-besides that, the project has some useful features such as the custom file name mode and the report generation mode which makes it so helpful in everyday life for the user.
+Besides that, the project has some useful features such as the custom document name mode and the report generation mode which makes it so helpful in everyday life for the user.
 
 ## Features:
-the project has three main features that increase its usability:
+The project has four main features that increase its usability:
 
-- the first one is the ability to update the budget in the middle of the month which gives the ability to the user to
+- The first one is the ability to update the budget in the middle of the month which gives the flexibility to the user to
 add any new income to the budget along with the source of the amount added.
 
-- the second feature is giving the user the freedom to choose the name of the csv file that will contain the
-financial information instead of the default value for the file name which is the current month and year at the time
-the file being created.
+- The second feature is giving the user the freedom to choose the name of the recording document that will contain the
+financial information instead of the default value for the document name which is the current month and year at the time
+the document is being created.
 
-- the third and last feature but maybe the most important one is the possibility to create a pdf report based on the
-information in the csv file that has been inputted earlier, and besides that the program does prompt the user to add
-any images related to the budget or withdrawals mentioned in the csv file to the current directory where the program
-is being executed in order for the images to be added to the report under the table that has the financial info.
+- The third feature is the currency exchange with the real-time rates, at anytime after the file creation. where each file gets created with a certain currency from the list of the supported currencies by ABN-AMRO FX Trade API and may be exchanged into another from the currencies on the same list.
 
-## Libraries used in the project:
+- The fourth feature but maybe the most important one is the possibility to create a .pdf report based on the
+information in the recording document that has been inputted earlier. and a table for the classes of the images in the **images** directory.
+
+## External libraries used in the project:
 - [pandas](https://pandas.pydata.org/)
 - [reportlab](https://www.reportlab.com/)
 - [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
+- [TensorFlow](https://www.tensorflow.org/)
+
+## Notes for developers:
+- To make your life easier by running the project without the need to generate an API key everytime, another currency exchange API is there "freecurrencyapi" and it's integration file may be found in the path "project/utils/CurrencyConversion.py".
+
+- The notebook in the path "project/utils/image_classification.ipynb" is for training the classification algorithm used in the "project/utils/image_predictor.py" and it can be edited to get another classification model maybe with increased accuracy, robustness, or another metric.
+
 
 ## Functions of the project:
+- In the default mode of the project the program has two paths to choose from, the first is when there is no
+file in the specified name where by default the name is the date, or the custom name chosen by the user, and this path could be followed only once per file name, while the second path is when there is already a file and the user is adding an entry of withdrawing a certain amount and this path could be taken as many times as needed in the same file name.
 
-- in the default mode of the project the program has two paths to choose from autonomously, the first is when there is no
-file in the specified name where by default the name is the date or the custom name chosen by the user, and this file could be
-followed only once per file name, while the second path is when there is already a file and the user is adding an entry of
- withdrawing a certain amount and this path could be taken as many times as needed in the same file name.
-
-- the budget update mode: the user will have the freedom to choose the name of the file to be updated, and what happens
+- The budget update mode: the user will have the freedom to choose the name of the file to be updated, and what happens
 in this mode is that the user will be asked to enter the new source of budget and the amount this source will add to
 the budget, after that the amount will be automatically added to both the **budget** column and the **amount left**
-in the csv file and a new entry will get added to the file indicating that a budget update has happened with a specified
-date and time.
+in the recording document and a new entry will get added to the document indicating that a budget update has happened with a specified date and time.
 
-- report generation mode: in this mode and just like the two modes earlier, the user will have the freedom to choose the
-filename for which the report will be generated, the report is a pdf file that contains all the information in the csv
-file structured in a form of a table and under that table the report will include any photos in the directory the program
-is running from.
+- Report generation mode: in this mode and just like the two modes earlier, the user will have the freedom to choose the
+filename for which the report will be generated, the report is a pdf file that contains all the information in the recording document structured in a form of a table and under that table the anotherone includes the classes of the 
+images in the directory the program is connected to.
 
-- the fourth mode is the custom file name which can be used alone or in addition to another mode, and this mode enables
+- The fourth mode is the custom file name which can be used alone or in addition to another mode, and this mode enables
 the user to create more than one csv file per month, for a household, create one for a second household, or maybe for
 a project that could fit with the structure of the program of budgeting and withdrawing.
 
+- The currency update mode: each recording document gets created includes a column for the currency of all the expences and budgets in it. and this currency can be updated, and the numbers transfered to another currency at anytime. that transfer happens to the accuracy of two floating points.
+
 ## Instructions:
+This section includes instructions with example answers.
 
-before running the program it is advised to create a new directory and put only the program i.e. "project.py", in the directory.
+before running the program it is recommended to create a diirectory to save the images in, or edit the path for the images directory in the image_predictor. since adding the images to this directory may happen by taking photos through running the program or adding images directly for example by copy/paste.
 
-- to run the program in the basic mode you can use:
+- To run the program in the basic mode you can use:
 ```python
-python project.py
+python main.py
 ```
-where you will be asked to input:
-**The amount of the money for the month:** e.g. 1000
+where you will be asked to choose the recording document type:
+**Please, select the data saving type and click submit (csv, database):** e.g. csv
 
-and **the sources of the budget:** e.g. salary
+after pressing submit a new window will show asking for:
+**The amount of the money for the month:** e.g. 2000
 
-after pressing submit a new file will be generated that is named after the current month and year.
+and **Sources of the budget:** e.g. Salary
+
+after that a widow asking for the currency of the file:
+**Currency:** e.g. EUR
 
 and after the file gets created you will be asked: **any entries now(y/n):** e.g. y
 
@@ -90,67 +93,88 @@ and in the same window **The purpose of this withdrawal:** e.g. needed for buyin
 and by that, another entry will be added to the file and the number you entered in **the amount to be withdrawn:**
 will be subtracted from the budget and the amount left will be autonomously updated with the result of the subtraction.
 
-- for the program to operate in Budget_update mode use the option:
+after that a window asking about taking photos will show:
+**Any photos to take(y/n):** e.g. y
+
+a window will open with the stream of the camera selected to work with the project showing in it, after fixing the wiew in the camera the letter **q** needs to be pressed to take the photo and close the window.
+
+- For the program to operate in Budget_update mode use the option:
 ```python
-python project.py -b
+python main.py -b
 ```
-and after you press enter you will be asked to input:
+and after running the program a window will be ask to input the recording document type:
+**Please, select the data saving type and click submit (csv, database):** e.g. csv
+
+then a different window will appear to input:
 **new budget sources:** e.g. investments+sold goods revenue
 
 and **added budget amount:** e.g. 1000
 
-and after pressing "enter" or clicking on "submit" the added budget amount will be added to every row in the file
+after pressing "enter" or clicking on "submit" the added budget amount will be added to every row in the file
 under the budget column and the same for the amount left column, it will be updated entirely with the added budget
 amount.
 
 in addition to updating the numerical columns, a new entry will be added to the csv file stating that a budget update
 has taken place and the date and time of the budget update.
 
-- to activate the program in report generation mode use:
+- To activate the program in report generation mode use:
 ```python
-python project.py -g
+python main.py -g
 ```
-after executing that command you will be asked to **Please, add any images (use extension: .jpg or .png) related to the report you are trying to generate in the directory: {d}, Continue(y/n):** e.g. **y**
+before that add all the images that could be related to the information in the csv file created before to the images directory, for example, such images could be images of a financial report, payment reciept, or an email.
 
-add all the images that could be related to the information in the csv file created before to the current directory
-the program is being executed in, for example, such images could be images of a salary slip, payment check, or shopping lists.
-after you do so you can type **y** in the window displayed and click submit.
+after executing that command you will be asked to: 
+**Please, select the data saving type and click submit (csv, database):** e.g. csv
 
 after doing that a pdf report will be generated and you can find it in the current directory of the program.
 
-that report contains all the data in the csv file arranged in the form of a table and under it, you can find the images you
-added earlier to the current directory.
+that report contains all the data in the csv file arranged in the form of a table and under it, you can find a table with all the supported image classes and the count of how many images in the directory from each class.
 
-- a final option that could be used is the custom file name:
+- Another option is to update the currency, and to do that:
 ```python
-python project.py -g -c
+python main.py -cu
+```
+after executing this command a window will show prompting:
+**Please, select the data saving type and click submit (csv, database):** e.g. csv
+
+and after choosing the recording document type, another window shpw prompting for:
+**New currency:** e.g. USD
+
+and after pressing enter the file will get updated and all the numbers in it will be exchangeded to the new currency 
+
+- A final option that could be used is the custom file name:
+```python
+python main.py -g -c
 ```
 
 ```python
-python project.py -b -c
+python main.py -b -c
 ```
 
 ```python
-python project.py -c
+python main.py -cu -c
+```
+
+```python
+python main.py -c
 ```
 
 this mode can work with anyone of the previous modes and as follows:
 
-1- in the case of the report generation mode the **-c** option will allow you to choose the name of the csv file you want
-to generate the report.
+1- in the case of the report generation mode the **-c** option will allow you to choose the name of the recording document  you want to generate the report for.
 
-2- when using the budget update mode you can also choose the name of the file you want to update its budget.
+2- when using the budget update mode you can also choose the name of the recording document you want to update its budget.
 
-3- and for the base mode the option **-c** will enable you to create a file in a name other than the default auto-generated
-name.
+3- in the same command the name of the custom document can be chosen to update the currency of every entry in it.
+
+4- and for the base mode the option **-c** will enable you to create a recording document in a name other than the default auto-generated name.
 
 ## Future work:
+Some ideas for further development may be as follows:
 
-some ideas for further development may be as follows:
+- Use the production FX API version.
 
-- connecting the program to a database instead of creating csv files.
+- Creating a website or a mobile application based on the functionalities of the program.
 
-- creating a website or a mobile application based on the functionalities of the program.
-
-- integrating the program into work management software such as asana to add a budgeting side to the projects.
+- Integrating the program into work management software such as asana to add a budgeting side to the projects.
 
