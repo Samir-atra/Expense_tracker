@@ -6,13 +6,11 @@ def capture():
 # a function to capture a photo and save it with the title as the current time
     path = os.getcwd()
     cam = cv.VideoCapture(0)   
-    # s, img = cam.read()
     while (True):
-        ret, frame = cam.read()
+        _, frame = cam.read()
         cv.imshow('image', frame)
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
-        # x = input("what is x")
         title = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
     cv.imwrite(f"{path}/Images/images/{title}.jpg",frame)
     cv.destroyWindow("cam-test")

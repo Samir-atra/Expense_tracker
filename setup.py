@@ -13,7 +13,7 @@
 #         "pandas",
 #         "reportlab",
 #         "PySimpleGUI",
-#         "Flask",
+#         "tensorflow",
 #     ],
 #     classifiers=[
 #         "Development Status :: 1 - Planning",

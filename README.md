@@ -1,5 +1,4 @@
 # Expenses tracker
-# A work in progress
 
 
 ## General description:
@@ -39,10 +38,8 @@ information in the recording document that has been inputted earlier. and a tabl
 - [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
 - [TensorFlow](https://www.tensorflow.org/)
 
-## Notes for developers:
-- To make your life easier by running the project without the need to generate an API key everytime, another currency exchange API is there "freecurrencyapi" and it's integration file may be found in the path "project/utils/CurrencyConversion.py".
-
-- The notebook in the path "project/utils/image_classification.ipynb" is for training the classification algorithm used in the "project/utils/image_predictor.py" and it can be edited to get another classification model maybe with increased accuracy, robustness, or another metric.
+## Note for developers:
+- The notebook in the path "project/utils/image_classification.ipynb" is for training the classification algorithm used in the "project/utils/image_predictor.py" and it can be edited or fine-tuned to get another classification model maybe with increased accuracy, robustness, or another performance measure improvement.
 
 
 ## Functions of the project:
@@ -67,7 +64,9 @@ a project that could fit with the structure of the program of budgeting and with
 ## Instructions:
 This section includes instructions with example answers.
 
-before running the program it is recommended to create a diirectory to save the images in, or edit the path for the images directory in the image_predictor. since adding the images to this directory may happen by taking photos through running the program or adding images directly for example by copy/paste.
+before running the program it is recommended to create a directory to save the images in, or edit the path for the images directory in the image_predictor. since adding the images to this directory may happen by taking photos through running the program or adding images directly for example by copy/paste.
+
+Note: the first time the program runs it will take a bit longer to install dependencies, and it might request the Sudo password.
 
 - To run the program in the basic mode you can use:
 ```python

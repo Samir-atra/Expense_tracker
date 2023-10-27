@@ -1,38 +1,3 @@
-# expense tracker project
-
-"""
-what I want to build is a program that
-
-take in: - the month budget
-         - amount withdrawn each time
-         - the reason for withdrawal
-         - (might add a "user" later)
-
-give out in a .csv file named "current month and year": - the month budget
-                                                        - the amount withdrawn
-                                                        - the amount left from the budget
-                                                        - the reason for withdrawal
-                                                        - date of the withdrawal
-                                                        - time of the withdrawal
-
-featues to be added:
-- The ability to update the month budget in the middle of the month
-- the ability to have a full track for the inputs and outputs has been added and removed from the project for the current month(concat everything in one pdf file)
-- the ability to custom name the files.
-- the ability to include reciept images and checks in the report file.
-
-Exceptions to be added:
-- filling a single bar in a two bar window. DONE
-- entering a none csv filename in -c mode. DONE
-- withdrawing more than the amount left in the budget.  DONE
-- using c mode without a filename. DONE
-- adding a budget source without a plus sign. Done
-- add the ability to save the info in a database to the side of a csv file.
-
-check the rest file for improvements
-
-"""
-
 # imports
 from datetime import datetime
 import csv
@@ -162,7 +127,7 @@ class Dictionary:
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = withdraw
         try:
-            left = int(budget) - int(withdraw)
+            left = float(budget) - float(withdraw)
         except ValueError:
             sys.exit("Invalid input.")
         if left < 0:

@@ -1,14 +1,4 @@
-"""
-create functions for:
-    - creating the database if not exists
-    - creating a table with the month date if not exists
-    - make an entry to the table 
-    - table updater for new budget
-    - generating a pdf report
-    - build a gui for the project.
-    - check the queries quality and safty
-"""
-
+# imports
 import sqlite3
 from datetime import datetime
 import os

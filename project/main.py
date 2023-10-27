@@ -1,5 +1,3 @@
-# add the currency change and update feature.
-# connect a currency exchange API even if (USD, EUR) only.
 
 from DBproject import (
     db_first_entry,
