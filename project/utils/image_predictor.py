@@ -22,7 +22,9 @@ def predict_image():
     "Resume":0,
     "Scientific":0,}
 
-    full_model_saving_path = pathlib.Path('/home/samer/Desktop/Beedoo/Expenses_tracker_stuff/expenses_tracker_model.h5')
+    model_path = input("Please input the full path to the h5 model to be used for prediction.")
+    #"/home/samer/Desktop/Beedoo/Expenses_tracker_stuff/expenses_tracker_model.h5"
+    full_model_saving_path = pathlib.Path(model_path)
     loaded_model = tf.keras.models.load_model(full_model_saving_path, compile=True)
     pred_img_path = pathlib.Path(f'{path}/Images/')
 

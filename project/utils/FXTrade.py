@@ -5,7 +5,6 @@ def convert_currency(trans_from, trans_to, amount):
 
     subprocess.run(["sudo", "apt-get", "install", "-y", "jq"], check=True)
     x = subprocess.run(["bash", "utils/FX.sh", "{}".format(trans_from), "{}".format(trans_to)], capture_output=True)
-    # print("this is x",x)
 
     # to get the mid rate of the currency exchange
     try:

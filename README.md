@@ -66,7 +66,10 @@ This section includes instructions with example answers.
 
 before running the program it is recommended to create a directory to save the images in, or edit the path for the images directory in the image_predictor. since adding the images to this directory may happen by taking photos through running the program or adding images directly for example by copy/paste.
 
-Note: the first time the program runs it will take a bit longer to install dependencies, and it might request the Sudo password.
+Notes: 
+- the first time the program runs it will take a bit longer to install dependencies, and it might request the Sudo password.
+
+- to get the project running the paths of the trained model needs to be edited.
 
 - To run the program in the basic mode you can use:
 ```python
@@ -128,6 +131,10 @@ after executing that command you will be asked to:
 after doing that a pdf report will be generated and you can find it in the current directory of the program.
 
 that report contains all the data in the csv file arranged in the form of a table and under it, you can find a table with all the supported image classes and the count of how many images in the directory from each class.
+
+the model used for prediction can be found in the [link](https://drive.google.com/file/d/1fj-kEbQUOAFrEamnn31Y8w-No7tuDIyC/view?usp=sharing)
+
+and the dataset used for training can be found on [this link](https://www.kaggle.com/datasets/patrickaudriaz/tobacco3482jpg)
 
 - Another option is to update the currency, and to do that:
 ```python
