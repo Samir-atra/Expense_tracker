@@ -88,7 +88,7 @@ def csv_generate_report(file_name):
 
 
 def csv_currency_update(file_name, new_currency):
-
+    # a function to deliver the currency update of the currency update mode on csv data files
     x = pd.DataFrame(pd.read_csv(file_name))
     old_currency = x.iloc[-1, 6]
     if new_currency == old_currency:
@@ -122,7 +122,7 @@ class Dictionary:
         ]
         self.date = datetime.now().strftime("%x")
         self.time = datetime.now().strftime("%X")
-
+    # a help function to make an entry to a csv file
     def entry(self, budget, withdraw,  purpose, currency):
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = withdraw
@@ -139,7 +139,7 @@ class Dictionary:
         self.di[0]["Currency"] = currency
 
         return self.di
-
+    # a help function to deliver a currency or a budget update.
     def update(self, budget, amount_left, purpose, currency):
         self.di[0]["Budget"] = budget
         self.di[0]["Withdraw"] = 0
