@@ -9,7 +9,7 @@ curl -X GET \
      https://api-sandbox.abnamro.com/v1/fxtrade/rates/${1}${2} \
      -H "Accept: application/json" \
      -H "Authorization: Bearer $AC" \
-     -H "API-Key: API-KEY"
+     -H "API-Key: <user-API-key>"
 
 
 # 

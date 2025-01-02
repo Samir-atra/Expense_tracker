@@ -1,5 +1,12 @@
+"""
+run the execution of the project    
+"""
 
-from DBproject import (
+from datetime import datetime
+import os
+import argparse
+import sys
+from project.db_project import (
     db_first_entry,
     db_make_an_entry,
     db_budget_update,
@@ -7,7 +14,7 @@ from DBproject import (
     db_check_existence,
     db_currency_update,
 )
-from CSVproject import (
+from project.csv_project import (
     csv_first_entry,
     csv_make_an_entry,
     csv_budget_update,
@@ -15,17 +22,16 @@ from CSVproject import (
     csv_check_existence,
     csv_currency_update,
 )
-from datetime import datetime
-import os
-import argparse
-import sys
-import utils.Gui as Gui
+import project.utils.gui as gui
 import utils.report_generator as rg
 import utils.take_a_photo as tp
 
 
 def main():
-
+    """
+    the main function for the project that handles the command
+    line arguments and the default program execution
+    """
     # parse the command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", help="budget editing mode", action="store_true")
@@ -34,9 +40,9 @@ def main():
     parser.add_argument("-cu", help="currncy update mode", action="store_true")
     args = parser.parse_args()
 
-    _, type_question = Gui.gui_function(
+    _, type_question = gui.gui_function(
         "Choose type",
-        f"Please, select the data saving type and click submit (csv, database): ",
+        "Please, select the data saving type and click submit (csv, database): ",
         "",
         "Submit",
         "Cancel",
@@ -64,7 +70,7 @@ def main():
 
     # budget editing command line argument
     if args.b:
-        _, budget_sources = Gui.gui_function(
+        _, budget_sources = gui.gui_function(
             "Budget_update",
             "New budget sources (usage: source1+source2+source3+...): ",
             "Added budget amount: ",
@@ -77,7 +83,7 @@ def main():
         )
     # currency update command line argument
     elif args.cu:
-        _, new_currency = Gui.gui_function(
+        _, new_currency = gui.gui_function(
             "Currency upddate",
             "New currency:",
             "",
@@ -93,7 +99,7 @@ def main():
     # default program execution
     else:
         if globals()[f"{datatype}_check_existence"](file_name):
-            _, budget_sources = Gui.gui_function(
+            _, budget_sources = gui.gui_function(
                 "Budget",
                 "The amount of money for the month: ",
                 "Sources of the budget: ",
@@ -101,15 +107,15 @@ def main():
                 "Cancel",
                 2,
             )
-            _, currency = Gui.gui_function("", "Currency: ", "", "Submit", "Cancel", 1)
+            _, currency = gui.gui_function("", "Currency: ", "", "Submit", "Cancel", 1)
             globals()[f"{datatype}_first_entry"](
                 file_name, budget_sources[0], budget_sources[1], currency[0]
             )
-            _, q = Gui.gui_function(
+            _, q = gui.gui_function(
                 "", "Any entries now(y/n): ", "", "Submit", "Cancel", 1
             )
             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
-                _, withdraw_amount_purpose = Gui.gui_function(
+                _, withdraw_amount_purpose = gui.gui_function(
                     "Withdrawal",
                     "The amount to be withdrawn: ",
                     "The purpose of this withdrawal: ",
@@ -121,18 +127,16 @@ def main():
                     file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
                 )
 
-                _, q = Gui.gui_function(
-                "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
+                _, q = gui.gui_function(
+                    "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
                 )
                 if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
                     tp.capture()
 
-
-
             elif q[0] == "n" or q[0] == "N" or q[0] == "no" or q[0] == "No":
                 pass
         else:
-            _, withdraw_amount_purpose = Gui.gui_function(
+            _, withdraw_amount_purpose = gui.gui_function(
                 "Withdrawal",
                 "The amount to be withdrawn: ",
                 "The purpose of this withdrawal: ",
@@ -144,12 +148,11 @@ def main():
                 file_name, withdraw_amount_purpose[0], withdraw_amount_purpose[1]
             )
 
-            _, q = Gui.gui_function(
-            "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
+            _, q = gui.gui_function(
+                "", "Any photos to take(y/n): ", "", "Submit", "Cancel", 1
             )
             if q[0] == "y" or q[0] == "Y" or q[0] == "yes" or q[0] == "Yes":
                 tp.capture()
-
 
 
 if __name__ == "__main__":
