@@ -2,8 +2,10 @@
 
 
 ## General description:
-Originally, this was the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language that have been learned during the course, and later after the course many improvemets and 
+Originally, this was the final project of CS50P which is supposed to include some if not all the concepts of the Python programming language that have been learned during the course, and later after the course many improvements and 
 features got added.
+
+A video presentation link for the original video link: [Click here](https://youtu.be/nruasnClqvc)
 
 The main functionality of the project is to track the daily expenses of the household, a project, or some other use the
 customer may find it fit since it is built to have a single deposit and many withdrawals and it may not fit
